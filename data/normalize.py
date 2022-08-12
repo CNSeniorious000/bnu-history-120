@@ -15,6 +15,9 @@ def normalize(string: str):
         .replace("—", "-")
         .replace("--", "——")
         .replace("~", "-")
+        .replace("， ", "，")
+        .replace("。 ", "。")
+        .replace("； ", "；")
         .replace("\r\n", "\n")
     )
 

@@ -13,6 +13,7 @@ def normalize(string: str):
         .replace("？)", "?)")  # (yyyy-?)
         .replace("？）", "?）")  # （yyyy-?）
         .replace("—", "-")
+        .replace("--", "——")
         .replace("~", "-")
         .replace("\r\n", "\n")
     )

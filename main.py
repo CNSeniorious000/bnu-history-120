@@ -44,7 +44,7 @@ class Categories(Enum):
     founder = "创始人"
 
 
-@app.get("/{university}/{category}/{person}", responses={
+@app.get("/{university}/{category}/{name}", responses={
     200: {"content": {"text/html": {}}}, 404: {"content": {"text/plain": {}}}
 })
 def get_person_info(university: Universities, category: Categories, name: str):

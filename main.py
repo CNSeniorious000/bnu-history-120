@@ -1,3 +1,4 @@
+from urllib.parse import urlparse, unquote
 from brotli_asgi import BrotliMiddleware
 from starlette.requests import Request
 from traceback import format_exc
@@ -7,7 +8,8 @@ from hashlib import md5
 from enum import Enum
 from person import *
 
-app = FastAPI(title="BNU 120 years 🎉", description=open("readme.md", encoding="utf-8").read(), version="dev")
+app = FastAPI(title="BNU 120 years 🎉", description=open("readme.md", encoding="utf-8").read(), version="dev",
+              contact={"name": "Muspi Merol", "url": "https://muspimerol.site/", "email": "admin@muspimerol.site"})
 app.add_middleware(BrotliMiddleware, quality=11)
 
 
@@ -19,6 +21,16 @@ def on_scraper(request: Request):
 
 def add_etag(response: Response):
     response.headers["ETag"] = f'W/"{md5(response.body).hexdigest()}"'
+
+
+@app.get("/{filename}.svg")
+def get_svg_asset(request: Request, filename: str = ...):
+    path = unquote(urlparse(request.headers["referer"]).path, "utf-8").removeprefix("/")
+    full_path = f"./data/{path}/{filename}.svg"
+    if isfile(full_path):
+        return FileResponse(full_path)
+    else:
+        return PlainTextResponse(f"{full_path} is not a file", 404)
 
 
 class Universities(Enum):

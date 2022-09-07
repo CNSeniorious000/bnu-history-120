@@ -17,6 +17,10 @@ def on_scraper(request: Request):
     return PlainTextResponse("User-agent: *\nAllow: /")
 
 
+def add_etag(response: Response):
+    response.headers["ETag"] = f'W/"{md5(response.body).hexdigest()}"'
+
+
 class Universities(Enum):
     BNU = "北师大"
     FuJen = "辅大"
@@ -27,8 +31,7 @@ class Universities(Enum):
 def get_university_info(university: Universities):
     try:
         html = University(university.value, []).html
-        response = HTMLResponse(html)
-        response.headers["ETag"] = f'W/"{md5(html.encode("utf-8")).hexdigest()}"'
+        add_etag(response := HTMLResponse(html))
         return response
     except NotADirectoryError:
         return ORJSONResponse(format_exc(chain=False), 422)
@@ -48,8 +51,7 @@ def get_person_info(university: Universities, category: Categories, name: str):
     try:
         person = Person(name, University(university.value, []), category.value)
         html = person.html
-        response = HTMLResponse(html)
-        response.headers["ETag"] = f'W/"{md5(html.encode("utf-8")).hexdigest()}"'
+        add_etag(response := HTMLResponse(html))
         return response
     except (NotADirectoryError, FileNotFoundError):
         return PlainTextResponse(format_exc(chain=False), 404)

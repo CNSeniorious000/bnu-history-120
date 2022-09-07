@@ -1,6 +1,6 @@
 from markdown2 import markdown_path, markdown
 from functools import cached_property, cache
-from os.path import isdir
+from os.path import isdir, isfile
 from os import walk
 
 extras = ["header-ids"]
@@ -10,8 +10,8 @@ class University:
     universities = []
 
     def __new__(cls, name, categories):
-        if not isdir(directory := f"./data/{name}"):
-            raise NotADirectoryError(f"{directory} is not a directory")
+        if not isdir(f"./data/{name}"):
+            raise NotADirectoryError(f"{name} is not a valid university name")
 
         for university in cls.universities:
             if university.name == name:
@@ -44,6 +44,12 @@ class University:
     def __repr__(self):
         return self.name
 
+    def __hash__(self):
+        return hash(self.name)
+
+    def __eq__(self, university):
+        return isinstance(university, University) and university.name == self.name
+
     @classmethod
     def get_all_people(cls) -> list["Person"]:
         return sum([university.people for university in cls.universities], [])
@@ -51,10 +57,14 @@ class University:
 
 class Person:
     @cache
-    def __new__(cls, *args, **kwargs):
+    def __new__(cls, name, university, category):
+        if not isdir(directory := f"{university.path}/{category}"):
+            raise NotADirectoryError(f"{category} is not a valid category name")
+        if not isfile(f"{directory}/{name}.md"):
+            raise FileNotFoundError(f"{name} is not a valid person name")
         return object.__new__(cls)
 
-    def __init__(self, name, university: University, category: str):
+    def __init__(self, name, university: University, category):
         self.name = name
         self.university = university
         self.category = category

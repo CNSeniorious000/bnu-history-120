@@ -1,5 +1,6 @@
 from markdown2 import markdown_path, markdown
 from functools import cached_property, cache
+from os.path import isdir
 from os import walk
 
 extras = ["header-ids"]
@@ -9,6 +10,9 @@ class University:
     universities = []
 
     def __new__(cls, name, categories):
+        if not isdir(directory := f"./data/{name}"):
+            raise NotADirectoryError(f"{directory} is not a directory")
+
         for university in cls.universities:
             if university.name == name:
                 return university
@@ -17,7 +21,7 @@ class University:
         cls.universities.append(self)
         return self
 
-    def __init__(self, name: str, categories: list[str]):
+    def __init__(self, name, categories: list[str]):
         self.name = name
         self.categories = categories
         self.path = f"./data/{name}"
@@ -80,9 +84,10 @@ class Person:
         return isinstance(person, Person) and person.path == self.path
 
 
+University("北师大", ["教师", "校友", "校长"])
+University("女高师", ["教师", "校友", "校长"])
+University("辅大", ["教师", "校友", "校长", "创始人"])
+
 if __name__ == '__main__':
-    University("北师大", ["教师", "校友", "校长"])
-    University("女高师", ["教师", "校友", "校长"])
-    University("辅大", ["教师", "校友", "校长", "创始人"])
     people = University.get_all_people()
     print(University("北师大", []).html)

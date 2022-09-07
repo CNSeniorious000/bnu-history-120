@@ -1,17 +1,23 @@
+from markdown2 import markdown_path, markdown
 from functools import cached_property, cache
 from os import walk
+
+extras = ["header-ids"]
 
 
 class University:
     universities = []
 
-    @cache
-    def __new__(cls, *args, **kwargs):
+    def __new__(cls, name, categories):
+        for university in cls.universities:
+            if university.name == name:
+                return university
+
         self = object.__new__(cls)
         cls.universities.append(self)
         return self
 
-    def __init__(self, name: str, categories: tuple):
+    def __init__(self, name: str, categories: list[str]):
         self.name = name
         self.categories = categories
         self.path = f"./data/{name}"
@@ -27,11 +33,15 @@ class University:
 
         return people
 
+    @cached_property
+    def html(self):
+        return markdown_path(f"{self.path}/index.md", extras=extras)
+
     def __repr__(self):
         return self.name
 
     @classmethod
-    def get_all_people(cls):
+    def get_all_people(cls) -> list["Person"]:
         return sum([university.people for university in cls.universities], [])
 
 
@@ -46,6 +56,20 @@ class Person:
         self.category = category
         self.path = f"{university.path}/{category}/{name}.md"
 
+        with open(self.path, encoding="utf-8") as f:
+            text = f.read()
+
+        if text.startswith("![]("):
+            self.portrait = text[text.index("(") + 1:text.index(")")]
+            self.content = text[text.index("\n") + 1:]
+        else:
+            self.portrait = None
+            self.content = text
+
+    @cached_property
+    def html(self):
+        return markdown(self.content, extras=extras)
+
     def __repr__(self):
         return self.name
 
@@ -57,10 +81,8 @@ class Person:
 
 
 if __name__ == '__main__':
-    University("北师大", ("教师", "校友", "校长"))
-    University("女高师", ("教师", "校友", "校长"))
-    University("辅大", ("教师", "校友", "校长", "创始人"))
+    University("北师大", ["教师", "校友", "校长"])
+    University("女高师", ["教师", "校友", "校长"])
+    University("辅大", ["教师", "校友", "校长", "创始人"])
     people = University.get_all_people()
-    assert len(people) == len(set(people))
-    print(len(people))
-    print(len(set(map(Person.__repr__, people))))
+    print(University("北师大", []).html)

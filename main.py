@@ -38,7 +38,7 @@ def render_css(request: Request, filename: str):
                 and isfile(dark_css_path := f"./static/{filename}-dark.css"):
             """生成聚合css"""
         else:
-            return open(main_css_path).read()
+            return Response(open(main_css_path).read(), media_type="text/css")
     else:
         return PlainTextResponse(f"{main_css_path} is not a file", 404)
 
@@ -65,7 +65,7 @@ def get_svg_asset(request: Request, filename: str):
         return PlainTextResponse("you can't get a svg without a referer header", 400)
     full_path = f"./data/{path}/{filename}.svg"
     if isfile(full_path):
-        return open(full_path, encoding="utf-8").read()
+        return Response(open(full_path, encoding="utf-8").read(), media_type="image/svg+xml")
     else:
         return PlainTextResponse(f"{full_path} is not a file", 404)
 

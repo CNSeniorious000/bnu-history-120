@@ -8,7 +8,6 @@ body {
     background-color: var(--primary-color);
 }
 
-
 * {
     line-height: 1.7em;
     margin: 0;
@@ -19,32 +18,36 @@ strong {
     font-weight: 700;
 }
 
-p, h6, li, hr, blockquote {
+blockquote {
     margin-top: 1em;
+}
+
+p, h6, li, hr {
+    padding-top: 1em;
     font-weight: 400;
     font-size: 19px;
 }
 
 h5 {
-    margin-top: 1em;
+    padding-top: 1em;
     font-weight: 500;
     font-size: 22px;
 }
 
 h4 {
-    margin-top: 1em;
+    padding-top: 1em;
     font-weight: 600;
     font-size: 24px;
 }
 
 h3 {
-    margin-top: 1em;
+    padding-top: 1em;
     font-weight: 700;
     font-size: 26px;
 }
 
 h2 {
-    margin-top: 1em;
+    padding-top: 1em;
     font-weight: 900;
     font-size: 28px;
 }
@@ -59,6 +62,10 @@ h1 {
 blockquote {
     padding-left: 1em;
     padding-right: 1em;
+}
+
+blockquote > p:first-child {
+    padding-top: 1em;
 }
 
 blockquote > p:last-child {

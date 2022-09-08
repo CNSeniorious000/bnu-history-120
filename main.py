@@ -1,3 +1,4 @@
+from starlette.templating import Jinja2Templates
 from urllib.parse import urlparse, unquote
 from brotli_asgi import BrotliMiddleware
 from starlette.requests import Request
@@ -21,6 +22,11 @@ def on_scraper(request: Request):
 
 def add_etag(response: Response):
     response.headers["ETag"] = f'W/"{md5(response.body).hexdigest()}"'
+    return response
+
+
+template = Jinja2Templates("./static")
+TemplateResponse = template.TemplateResponse
 
 
 @app.get("/{filename}.svg")
@@ -38,13 +44,27 @@ class Universities(Enum):
     FuJen = "辅大"
     BFHNC = "女高师"
 
+    @property
+    def name(self):
+        match self:
+            case self.BNU:
+                return "北京师范大学"
+            case self.FuJen:
+                return "辅仁大学"
+            case self.BFHNC:
+                return "北京女子高等师范学校"
+
 
 @app.get("/{university}", responses={200: {"content": {"text/html": {}}}})
-def get_university_info(university: Universities):
+def get_university_info(request: Request, university: Universities):
     try:
         html = University(university.value, []).html
-        add_etag(response := HTMLResponse(html))
-        return response
+        return add_etag(TemplateResponse("person.html", {
+            "request": request,
+            "title": university.name,
+            "markdown": html
+        }))
+
     except NotADirectoryError:
         return ORJSONResponse(format_exc(chain=False), 422)
 
@@ -59,11 +79,16 @@ class Categories(Enum):
 @app.get("/{university}/{category}/{name}", responses={
     200: {"content": {"text/html": {}}}, 404: {"content": {"text/plain": {}}}
 })
-def get_person_info(university: Universities, category: Categories, name: str):
+def get_person_info(request: Request, university: Universities, category: Categories, name: str):
     try:
         person = Person(name, University(university.value, []), category.value)
         html = person.html
-        add_etag(response := HTMLResponse(html))
-        return response
+        return add_etag(TemplateResponse("person.html", {
+            "request": request,
+            "title": f"{name} - {university.value}{category.value}",
+            "markdown": html
+        }))
+
+
     except (NotADirectoryError, FileNotFoundError):
         return PlainTextResponse(format_exc(chain=False), 404)

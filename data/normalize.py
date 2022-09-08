@@ -13,7 +13,8 @@ def normalize(string: str):
         .replace("？)", "?)")  # (yyyy-?)
         .replace("？）", "?）")  # （yyyy-?）
         .replace("—", "-")
-        .replace("--", "——")
+        .replace("--", "——")  # Chinese dash
+        .replace("——-", "---")  # markdown split line
         .replace("~", "-")
         .replace("， ", "，")
         .replace("。 ", "。")

@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title> {{ title }} </title>
+</head>
+<body>
+<div>
+    <article>
+        <div id="markdown">
+            {% autoescape off %} {{ markdown }} {% endautoescape %}
+        </div>
+    </article>
+</div>
+</body>
+</html>

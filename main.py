@@ -28,12 +28,28 @@ def get_favicon_ico():
 
 
 @app.get("/{filename}.css", include_in_schema=False)
-def get_common_css(filename: str):
-    full_path = f"./static/{filename}.css"
-    if isfile(full_path):
-        return FileResponse(full_path)
+def render_css(filename: str):
+    main_css_path = f"./static/{filename}.css"
+    if isfile(main_css_path):
+        if isfile(light_css_path := f"./static/{filename}-light.css") \
+                and isfile(dark_css_path := f"./static/{filename}-dark.css"):
+            """生成聚合css"""
+        else:
+            return FileResponse(main_css_path)
     else:
-        return PlainTextResponse(f"{full_path} is not a file", 404)
+        return PlainTextResponse(f"{main_css_path} is not a file", 404)
+
+    # generate mixed style sheet
+
+    main = open(main_css_path).read()
+    light = open(light_css_path).read()
+    dark = open(dark_css_path).read()
+
+    return add_etag(Response("\n".join((
+        main,
+        "@media (prefers-color-scheme: light) {", light, "}",
+        "@media (prefers-color-scheme: dark) {", dark, "}"
+    )), media_type="text/css"))
 
 
 @app.get("/{filename}.svg", include_in_schema=False)

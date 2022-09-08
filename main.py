@@ -22,10 +22,10 @@ def on_scraper(request: Request):
     return PlainTextResponse("User-agent: *\nAllow: /")
 
 
-@app.get("/favicon.ico", include_in_schema=False, response_class=FileResponse)
+@app.get("/favicon.ico", include_in_schema=False)
 @fine_log
 def get_favicon_ico(request):
-    return "./static/icon/favicon.ico"
+    return RedirectResponse("/icon/favicon.ico")
 
 
 @app.get("/{filename}.css", include_in_schema=False)

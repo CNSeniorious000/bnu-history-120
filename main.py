@@ -1,11 +1,10 @@
 from starlette.templating import Jinja2Templates
 from starlette.staticfiles import StaticFiles
-from urllib.parse import urlparse, unquote
+from urllib.parse import urlparse
 from brotli_asgi import BrotliMiddleware
 from traceback import format_exc
 from fastapi.responses import *
 from fastapi import FastAPI
-from hashlib import md5
 from enum import Enum
 from person import *
 from tools import *
@@ -31,6 +30,7 @@ def get_favicon_ico(request):
 
 @app.get("/{filename}.css", include_in_schema=False)
 @fine_log
+@cache_with_etag
 def render_css(request: Request, filename: str):
     main_css_path = f"./static/{filename}.css"
     if isfile(main_css_path):
@@ -38,7 +38,7 @@ def render_css(request: Request, filename: str):
                 and isfile(dark_css_path := f"./static/{filename}-dark.css"):
             """生成聚合css"""
         else:
-            return FileResponse(main_css_path)
+            return open(main_css_path).read()
     else:
         return PlainTextResponse(f"{main_css_path} is not a file", 404)
 
@@ -48,15 +48,16 @@ def render_css(request: Request, filename: str):
     light = open(light_css_path).read()
     dark = open(dark_css_path).read()
 
-    return add_etag(Response("\n".join((
+    return Response("\n".join((
         main,
         "@media (prefers-color-scheme: light) {", light, "}",
         "@media (prefers-color-scheme: dark) {", dark, "}"
-    )), media_type="text/css"))
+    )), media_type="text/css")
 
 
 @app.get("/{filename}.svg", include_in_schema=False)
 @fine_log
+@cache_with_etag
 def get_svg_asset(request: Request, filename: str):
     try:
         path = unquote(urlparse(request.headers["referer"]).path, "utf-8").removeprefix("/")
@@ -64,14 +65,9 @@ def get_svg_asset(request: Request, filename: str):
         return PlainTextResponse("you can't get a svg without a referer header", 400)
     full_path = f"./data/{path}/{filename}.svg"
     if isfile(full_path):
-        return FileResponse(full_path)
+        return open(full_path, encoding="utf-8").read()
     else:
         return PlainTextResponse(f"{full_path} is not a file", 404)
-
-
-def add_etag(response: Response):
-    response.headers["ETag"] = f'W/"{md5(response.body).hexdigest()}"'
-    return response
 
 
 template = Jinja2Templates("./static")
@@ -96,14 +92,15 @@ class Universities(Enum):
 
 @app.get("/{university}", responses={200: {"content": {"text/html": {}}}})
 @fine_log
+@cache_with_etag
 def get_university_info(request: Request, university: Universities):
     try:
         html = University(university.value, []).html
-        return add_etag(TemplateResponse("person.html", {
+        return TemplateResponse("person.html", {
             "request": request,
             "title": university.name,
             "markdown": html
-        }))
+        })
 
     except NotADirectoryError:
         return ORJSONResponse(format_exc(chain=False), 422)
@@ -120,15 +117,16 @@ class Categories(Enum):
     200: {"content": {"text/html": {}}}, 404: {"content": {"text/plain": {}}}
 })
 @fine_log
+@cache_with_etag
 def get_person_info(request: Request, university: Universities, category: Categories, name: str):
     try:
         person = Person(name, University(university.value, []), category.value)
         html = person.html
-        return add_etag(TemplateResponse("person.html", {
+        return TemplateResponse("person.html", {
             "request": request,
             "title": f"{name} - {university.value}{category.value}",
             "markdown": html
-        }))
+        })
 
     except (NotADirectoryError, FileNotFoundError):
         return PlainTextResponse(format_exc(chain=False), 404)

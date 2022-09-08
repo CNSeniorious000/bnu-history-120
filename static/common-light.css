@@ -1,0 +1,16 @@
+:root {
+    --primary-color: #AF1E24;
+}
+
+body {
+    background: var(--primary-color);
+    color: black;
+}
+
+#article {
+    background: white;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    color: var(--primary-color);
+}

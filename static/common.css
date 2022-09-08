@@ -1,0 +1,74 @@
+body {
+    font-family: "Noto Serif SC", serif;
+    overflow-x: hidden;
+}
+
+* {
+    line-height: 1.6em;
+    margin: 0;
+    padding: 0;
+}
+
+strong {
+    font-weight: 700;
+}
+
+p, h6, ol, ul, li {
+    font-weight: 300;
+    font-size: 20px;
+}
+
+h5 {
+    font-weight: 400;
+    font-size: 22px;
+}
+
+h4 {
+    font-weight: 500;
+    font-size: 24px;
+}
+
+h3 {
+    font-weight: 600;
+    font-size: 26px;
+}
+
+h2 {
+    font-weight: 700;
+    font-size: 28px;
+}
+
+h1 {
+    font-weight: 900;
+    font-size: 30px;
+}
+
+/* specials */
+
+#markdown > p {
+    text-indent: 2em;
+}
+
+ol, ul {
+    text-indent: 0;
+    margin-left: 2em;
+}
+
+/* layouts */
+
+#article {
+    padding: calc(min(10%, 7em));
+    letter-spacing: 0.5pt;
+}
+
+#article > article {
+    left: 0;
+    width: 100%;
+}
+
+#markdown {
+    display: flex;
+    flex-direction: column;
+    margin: 0;
+    padding: 0;
+}

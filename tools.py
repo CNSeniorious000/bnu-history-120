@@ -54,7 +54,7 @@ def cache_with_etag(handler):
 
     @wraps(handler)
     def inner(request: Request, *args, **kwargs):
-        etag = request.headers.get("If-Match")
+        etag = request.headers.get("If-None-Match")
         response: Response = handler(request, *args, **kwargs)
         if response.status_code // 100 == 2:
             if (new_etag := get_etag(response)) == etag:

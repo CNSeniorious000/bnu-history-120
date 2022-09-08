@@ -4,8 +4,8 @@ html {
 
 body {
     font-family: "Noto Serif SC", serif;
+    width: 100%;
     overflow-x: hidden;
-    background-color: var(--primary-color);
 }
 
 * {
@@ -84,6 +84,10 @@ img {
 }
 
 /* layouts */
+
+li > p {
+    padding-top: 0;
+}
 
 #article {
     min-height: 100vh;

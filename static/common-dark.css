@@ -1,3 +1,38 @@
-body {
-    background: black;
+* {
+    color: white;
+}
+
+#article {
+    background: #111;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    color: var(--primary-color);
+    filter: brightness(300%);
+}
+
+blockquote {
+    border-left: solid rgba(255, 255, 255, 0.1) 3pt;
+    background-color: rgba(255, 255, 255, 0.03);
+}
+
+hr {
+    border-top: none;
+    border-left: none;
+    border-right: none;
+    border-bottom: solid white 3pt;
+    border-radius: 0;
+    opacity: 2%;
+}
+
+body::-webkit-scrollbar {
+    display: none;
+}
+
+p, li, hr, blockquote {
+    font-weight: 200;
+}
+
+strong {
+    font-weight: 600;
 }

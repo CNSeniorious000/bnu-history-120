@@ -54,16 +54,24 @@ ol, ul {
     margin-left: 2em;
 }
 
+img {
+    position: relative;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
 /* layouts */
 
 #article {
-    padding: calc(min(10%, 7em));
+    min-height: 100vh;
     letter-spacing: 0.5pt;
 }
 
 #article > article {
-    left: 0;
-    width: 100%;
+    padding: calc(min(10%, 7em));
+    position: relative;
+    height: available;
+    width: available;
 }
 
 #markdown {

@@ -1,4 +1,5 @@
 from starlette.templating import Jinja2Templates
+from starlette.staticfiles import StaticFiles
 from urllib.parse import urlparse, unquote
 from brotli_asgi import BrotliMiddleware
 from starlette.requests import Request
@@ -12,12 +13,33 @@ from person import *
 app = FastAPI(title="BNU 120 years 🎉", description=open("readme.md", encoding="utf-8").read(), version="dev",
               contact={"name": "Muspi Merol", "url": "https://muspimerol.site/", "email": "admin@muspimerol.site"})
 app.add_middleware(BrotliMiddleware, quality=11)
+app.mount("/icon/", StaticFiles(directory="./static/icon/"))
 
 
 @app.get("/robots.txt", responses={200: {"content": {"text/plain": {}}}})
 def on_scraper(request: Request):
     print(request.headers)
     return PlainTextResponse("User-agent: *\nAllow: /")
+
+
+@app.get("/favicon.ico", include_in_schema=False, response_class=FileResponse)
+def get_favicon_ico():
+    return "./static/icon/favicon.ico"
+
+
+@app.get("/common.css", include_in_schema=False, response_class=FileResponse)
+def get_common_css():
+    return "./static/common.css"
+
+
+@app.get("/{filename}.svg")
+def get_svg_asset(request: Request, filename: str):
+    path = unquote(urlparse(request.headers["referer"]).path, "utf-8").removeprefix("/")
+    full_path = f"./data/{path}/{filename}.svg"
+    if isfile(full_path):
+        return FileResponse(full_path)
+    else:
+        return PlainTextResponse(f"{full_path} is not a file", 404)
 
 
 def add_etag(response: Response):
@@ -27,16 +49,6 @@ def add_etag(response: Response):
 
 template = Jinja2Templates("./static")
 TemplateResponse = template.TemplateResponse
-
-
-@app.get("/{filename}.svg")
-def get_svg_asset(request: Request, filename: str = ...):
-    path = unquote(urlparse(request.headers["referer"]).path, "utf-8").removeprefix("/")
-    full_path = f"./data/{path}/{filename}.svg"
-    if isfile(full_path):
-        return FileResponse(full_path)
-    else:
-        return PlainTextResponse(f"{full_path} is not a file", 404)
 
 
 class Universities(Enum):
@@ -88,7 +100,6 @@ def get_person_info(request: Request, university: Universities, category: Catego
             "title": f"{name} - {university.value}{category.value}",
             "markdown": html
         }))
-
 
     except (NotADirectoryError, FileNotFoundError):
         return PlainTextResponse(format_exc(chain=False), 404)

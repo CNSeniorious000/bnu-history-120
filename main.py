@@ -34,7 +34,10 @@ def get_common_css():
 
 @app.get("/{filename}.svg")
 def get_svg_asset(request: Request, filename: str):
-    path = unquote(urlparse(request.headers["referer"]).path, "utf-8").removeprefix("/")
+    try:
+        path = unquote(urlparse(request.headers["referer"]).path, "utf-8").removeprefix("/")
+    except KeyError:
+        return PlainTextResponse("you can't get a svg without a referer header", 400)
     full_path = f"./data/{path}/{filename}.svg"
     if isfile(full_path):
         return FileResponse(full_path)

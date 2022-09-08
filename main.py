@@ -24,7 +24,7 @@ def on_scraper(request: Request):
 
 @app.get("/favicon.ico", include_in_schema=False)
 @fine_log
-def get_favicon_ico(request):
+def get_favicon_ico(request: Request):
     return RedirectResponse("/icon/favicon.ico")
 
 

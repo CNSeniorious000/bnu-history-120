@@ -2,13 +2,13 @@ from starlette.templating import Jinja2Templates
 from starlette.staticfiles import StaticFiles
 from urllib.parse import urlparse, unquote
 from brotli_asgi import BrotliMiddleware
-from starlette.requests import Request
 from traceback import format_exc
 from fastapi.responses import *
 from fastapi import FastAPI
 from hashlib import md5
 from enum import Enum
 from person import *
+from tools import *
 
 app = FastAPI(title="BNU 120 years 🎉", description=open("readme.md", encoding="utf-8").read(), version="dev",
               contact={"name": "Muspi Merol", "url": "https://muspimerol.site/", "email": "admin@muspimerol.site"})
@@ -17,18 +17,21 @@ app.mount("/icon/", StaticFiles(directory="./static/icon/"))
 
 
 @app.get("/robots.txt", responses={200: {"content": {"text/plain": {}}}})
+@fine_log
 def on_scraper(request: Request):
     print(request.headers)
     return PlainTextResponse("User-agent: *\nAllow: /")
 
 
 @app.get("/favicon.ico", include_in_schema=False, response_class=FileResponse)
-def get_favicon_ico():
+@fine_log
+def get_favicon_ico(request):
     return "./static/icon/favicon.ico"
 
 
 @app.get("/{filename}.css", include_in_schema=False)
-def render_css(filename: str):
+@fine_log
+def render_css(request: Request, filename: str):
     main_css_path = f"./static/{filename}.css"
     if isfile(main_css_path):
         if isfile(light_css_path := f"./static/{filename}-light.css") \
@@ -53,6 +56,7 @@ def render_css(filename: str):
 
 
 @app.get("/{filename}.svg", include_in_schema=False)
+@fine_log
 def get_svg_asset(request: Request, filename: str):
     try:
         path = unquote(urlparse(request.headers["referer"]).path, "utf-8").removeprefix("/")
@@ -91,6 +95,7 @@ class Universities(Enum):
 
 
 @app.get("/{university}", responses={200: {"content": {"text/html": {}}}})
+@fine_log
 def get_university_info(request: Request, university: Universities):
     try:
         html = University(university.value, []).html
@@ -114,6 +119,7 @@ class Categories(Enum):
 @app.get("/{university}/{category}/{name}", responses={
     200: {"content": {"text/html": {}}}, 404: {"content": {"text/plain": {}}}
 })
+@fine_log
 def get_person_info(request: Request, university: Universities, category: Categories, name: str):
     try:
         person = Person(name, University(university.value, []), category.value)

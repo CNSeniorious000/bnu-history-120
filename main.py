@@ -27,12 +27,16 @@ def get_favicon_ico():
     return "./static/icon/favicon.ico"
 
 
-@app.get("/common.css", include_in_schema=False, response_class=FileResponse)
-def get_common_css():
-    return "./static/common.css"
+@app.get("/{filename}.css", include_in_schema=False)
+def get_common_css(filename: str):
+    full_path = f"./static/{filename}.css"
+    if isfile(full_path):
+        return FileResponse(full_path)
+    else:
+        return PlainTextResponse(f"{full_path} is not a file", 404)
 
 
-@app.get("/{filename}.svg")
+@app.get("/{filename}.svg", include_in_schema=False)
 def get_svg_asset(request: Request, filename: str):
     try:
         path = unquote(urlparse(request.headers["referer"]).path, "utf-8").removeprefix("/")

@@ -81,13 +81,7 @@ class Universities(Enum):
 
     @property
     def name(self):
-        match self:
-            case self.BNU:
-                return "北京师范大学"
-            case self.FuJen:
-                return "辅仁大学"
-            case self.BFHNC:
-                return "北京女子高等师范学校"
+        return University(self.value).full_name
 
 
 @app.get("/{university}", responses={200: {"content": {"text/html": {}}}})
@@ -99,7 +93,8 @@ def get_university_info(request: Request, university: Universities):
         return TemplateResponse("person.html", {
             "request": request,
             "title": university.name,
-            "markdown": html
+            "markdown": html,
+            "universities": University.universities
         })
 
     except NotADirectoryError:
@@ -125,7 +120,8 @@ def get_person_info(request: Request, university: Universities, category: Catego
         return TemplateResponse("person.html", {
             "request": request,
             "title": f"{name} - {university.value}{category.value}",
-            "markdown": html
+            "markdown": html,
+            "universities": University.universities
         })
 
     except (NotADirectoryError, FileNotFoundError):

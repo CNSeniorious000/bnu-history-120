@@ -12,6 +12,7 @@ body {
     line-height: 1.7em;
     margin: 0;
     padding: 0;
+    letter-spacing: 0.5pt;
 }
 
 strong {
@@ -89,9 +90,11 @@ li > p {
     padding-top: 0;
 }
 
-#article {
+#everything {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
     min-height: 100vh;
-    letter-spacing: 0.5pt;
 }
 
 #article > article {
@@ -106,6 +109,44 @@ li > p {
     flex-direction: column;
     margin: 0;
     padding: 0;
+}
+
+#footer {
+    position: relative;
+}
+
+#footer > footer {
+    padding: calc(min(10%, 7em));
+    background-color: #EEE;
+}
+
+#sitemap {
+    display: flex;
+    flex-direction: column;
+}
+
+#sitemap a {
+    color: inherit;
+}
+
+.university > h3, .category > h4 {
+    display: block;
+}
+
+.university {
+    display: flex;
+}
+
+@media (orientation: portrait) {
+    .university {
+        flex-direction: column;
+    }
+}
+
+@media (orientation: landscape) {
+    .university {
+        flex-direction: row;
+    }
 }
 
 :root {

@@ -9,7 +9,7 @@ extras = ["header-ids"]
 class University:
     universities = []
 
-    def __new__(cls, name, categories):
+    def __new__(cls, name, *args, **kwargs):
         if not isdir(f"./data/{name}"):
             raise NotADirectoryError(f"{name} is not a valid university name")
 
@@ -17,25 +17,31 @@ class University:
             if university.name == name:
                 return university
 
-        self = object.__new__(cls)
-        cls.universities.append(self)
-        return self
+        return object.__new__(cls)
 
-    def __init__(self, name, categories: list[str]):
+    def __init__(self, name, categories: list[str] = (), full_name=""):
         self.name = name
+        if self in self.universities:
+            return
+        self.full_name = full_name
         self.categories = categories
         self.path = f"./data/{name}"
+        self.universities.append(self)
+
+    @cache
+    def filter_category(self, category: str):
+        assert category in self.categories
+        return [
+            Person(path.removesuffix(".md"), self, category)
+            for path in next(walk(f"{self.path}/{category}"))[2]
+        ]
 
     @cached_property
     def people(self):
-        people = []
-        for category in self.categories:
-            people.extend([
-                Person(path.removesuffix(".md"), self, category)
-                for path in next(walk(f"{self.path}/{category}"))[2]
-            ])
-
-        return people
+        return sum((
+            self.filter_category(category)
+            for category in self.categories
+        ), [])
 
     @cached_property
     def html(self):
@@ -94,10 +100,6 @@ class Person:
         return isinstance(person, Person) and person.path == self.path
 
 
-University("北师大", ["教师", "校友", "校长"])
-University("女高师", ["教师", "校友", "校长"])
-University("辅大", ["教师", "校友", "校长", "创始人"])
-
-if __name__ == '__main__':
-    people = University.get_all_people()
-    print(University("北师大", []).html)
+University("北师大", ["教师", "校友", "校长"], "北京师范大学")
+University("女高师", ["教师", "校友", "校长"], "北京女子高等师范学校")
+University("辅大", ["教师", "校友", "校长", "创始人"], "辅仁大学")

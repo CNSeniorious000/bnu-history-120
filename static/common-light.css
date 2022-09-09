@@ -13,7 +13,7 @@ h1, h2, h3, h4, h5, h6 {
 
 blockquote {
     border-left: solid var(--primary-color) 1pt;
-    background-color: rgba(0, 0, 0, 0.05);
+    background-color: rgba(0, 0, 0, 0.03);
 }
 
 hr {
@@ -23,4 +23,8 @@ hr {
     border-bottom: solid var(--primary-color) 1pt;
     border-radius: 0;
     opacity: 10%;
+}
+
+#everything {
+    background-color: white;
 }

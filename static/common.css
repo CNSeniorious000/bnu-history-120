@@ -117,7 +117,6 @@ li > p {
 
 #footer > footer {
     padding: calc(min(10%, 7em));
-    background-color: #EEE;
 }
 
 #sitemap {

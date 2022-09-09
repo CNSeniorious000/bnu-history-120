@@ -33,3 +33,7 @@ p, li, hr, blockquote {
 strong {
     font-weight: 600;
 }
+
+#footer > footer {
+    background-color: black;
+}

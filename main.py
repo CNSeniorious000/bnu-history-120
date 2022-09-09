@@ -90,9 +90,10 @@ class Universities(Enum):
 def get_university_info(request: Request, university: Universities):
     try:
         html = University(university.value, []).html
-        return TemplateResponse("person.html", {
+        return TemplateResponse("article_view.html", {
             "request": request,
             "title": university.name,
+            "name": university.name,
             "markdown": html,
             "universities": University.universities
         })
@@ -117,8 +118,9 @@ def get_person_info(request: Request, university: Universities, category: Catego
     try:
         person = Person(name, University(university.value, []), category.value)
         html = person.html
-        return TemplateResponse("person.html", {
+        return TemplateResponse("article_view.html", {
             "request": request,
+            "name": name,
             "title": f"{name} - {university.value}{category.value}",
             "markdown": html,
             "universities": University.universities

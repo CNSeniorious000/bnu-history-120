@@ -37,3 +37,15 @@ strong {
 #footer > footer {
     background-color: black;
 }
+
+h3 > a, h4 > a {
+    opacity: 1;
+}
+
+a {
+    opacity: 70%;
+}
+
+a:hover {
+    opacity: 1;
+}

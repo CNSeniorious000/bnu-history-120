@@ -32,13 +32,13 @@
         <footer>
             <div id="sitemap">
                 {% for university in universities %}
-                    <h3><a href="/{{ university }}" class="subtitle"> {{ university.full_name }} </a></h3>
+                    <h3><a href="/{{ university }}" class="subtitle">{{ university.full_name }}</a></h3>
                     <div class="university">
                         {% for category in university.categories %}
                             <div class="category">
                                 <h4> {{ category }} </h4>
                                 {% for person in university.filter_category(category) %}
-                                    <a href="/{{ university }}/{{ category }}/{{ person }}"> {{ person }} </a>
+                                    <a href="/{{ university }}/{{ category }}/{{ person }}">{{ person }}</a>
                                 {% endfor %}
                             </div>
                         {% endfor %}

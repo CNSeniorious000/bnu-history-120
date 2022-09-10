@@ -48,5 +48,29 @@
         </footer>
     </div>
 </div>
+<template id="preloader">
+    <link rel="prefetch">
+</template>
 </body>
+<script>
+    const preloader = document.getElementById("preloader").content
+    const head = document.head
+    const loaded = new Set()
+
+    function addPreloadHook(event) {
+        let node = event.target
+        console.assert(node.nodeName === "A", node.nodeName)
+        let href = node.href
+
+        if (loaded.has(href)) return  // TODO: check same-origin
+
+        let link = preloader.cloneNode(true).querySelector("link")
+        link.href = href
+        head.appendChild(link)
+        loaded.add(href)
+    }
+
+    for (a of document.querySelectorAll("a")) a.onmouseenter = addPreloadHook
+
+</script>
 </html>

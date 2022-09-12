@@ -24,7 +24,7 @@
         <article>
             <div id="markdown">
                 <h1> {{ name }} </h1>
-                {% autoescape off %} {{ markdown }} {% endautoescape %}
+                {{ markdown | safe }}
             </div>
         </article>
     </div>

@@ -58,6 +58,12 @@ def render_css(request: Request, filename: str):
     )), media_type="text/css")
 
 
+@app.get("/preload.js", include_in_schema=False)
+@fine_log
+def get_preload_script(request: Request):
+    return FileResponse("./static/preload.js")
+
+
 @app.get("/{filename}.svg", include_in_schema=False)
 @fine_log
 @cache_with_etag

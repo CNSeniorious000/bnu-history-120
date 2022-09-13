@@ -6,7 +6,7 @@
 
 - 适配深色模式
 - 适配移动端
-- 悬浮秒开 (类似`prefetch`)
+- 悬浮秒开 (类似`prefetch`) 同时兼顾 SEO (整页服务端渲染)
 - 支持 `apple-touch-icon`
 
 ### deployed | 开始浏览

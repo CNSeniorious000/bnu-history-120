@@ -94,22 +94,12 @@ def get_person_info(request: Request, university: Universities, category: Catego
         return PlainTextResponse(format_exc(chain=False), 404)
 
 
-@app.get("/api/", tags=["API"])
-@fine_log
-@cache_with_etag
-def get_readme_md(request: Request):
-    return ORJSONResponse({
-        "div": template.get_template("div_article.xml").render(
-            {"name": "readme.md", "markdown": markdown_path("./readme.md", extras=extras)}
-        ), "title": f"🏗 under construction"
-    })
-
-
 @app.get("/", include_in_schema=False)
 @fine_log
 def home_page(request: Request):
     return TemplateResponse("article_view.html", {
         "request": request,
+        "non_preload": True,
         "title": "🏗 under construction",
         "name": "readme.md",
         "markdown": markdown_path("./readme.md", extras=extras),

@@ -49,5 +49,7 @@
     </div>
 </div>
 </body>
-<script src="/preload.js"></script>
+{% if not non_preload %}
+    <script src="/preload.js"></script>
+{% endif %}
 </html>

@@ -1,8 +1,6 @@
-<div id="article">
-    <article>
-        <div id="markdown">
-            <h1> {{ name }} </h1>
-            {{ markdown | safe }}
-        </div>
-    </article>
-</div>
+<article>
+    <div id="markdown">
+        <h1> {{ name }} </h1>
+        {{ markdown | safe }}
+    </div>
+</article>

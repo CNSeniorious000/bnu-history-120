@@ -15,6 +15,11 @@
   - `@media (prefers-color-scheme: light) { ... }`是另一种方式，但会增大一丁点加载的css的体积
 - 适配移动端
   - `<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0">`
+  - 页脚导航栏，竖屏下`flex-direction: column;`，横屏下`flex-direction: row;`
+  - 内边距`padding: calc(min(10%, 7em));`
+  - 总体套在一个弹性盒中
+    - 设定`min-height: 100vh;`保证底色不漏
+    - 设定`justify-content: space-between;`保证正文居上，页脚居下
 - 悬浮秒开 (类似各前端框架的`prefetch`) 同时兼顾 SEO (整页服务端渲染)
   1. 既然要SEO，必须保证直接访问每个页面都是服务端渲染好的
   2. 但是大部分页面页眉页脚、样式表和脚本 都是相同的，因此提供了**只返回正文和元数据的接口**，用于服务端渲染 [Swagger文档](/docs#/API) [ReDoc文档](/redoc#tag/API)

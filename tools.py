@@ -27,15 +27,15 @@ def fine_log(handler):
         t = perf_counter_ns()
         match response.status_code // 100:
             case 2:
-                log = logger.success
+                log = logger.debug
             case 3:
-                log = logger.info
+                log = logger.success
             case 4:
-                log = logger.warning
-            case 5:
                 log = logger.error
-            case _:
+            case 5:
                 log = logger.critical
+            case _:
+                log = logger.info
 
         log(" ".join((
             f"[{response.status_code}]",

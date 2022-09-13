@@ -25,12 +25,6 @@ def get_favicon_ico(request: Request):
     return RedirectResponse("/icon/favicon.ico")
 
 
-@app.get("/", include_in_schema=False)
-@fine_log
-def get_temporary_redirect(request: Request):
-    return RedirectResponse("/北师大")
-
-
 @app.get("/{filename}.css", include_in_schema=False)
 @fine_log
 @cache_with_etag

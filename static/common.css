@@ -168,10 +168,15 @@ a {
 
 code {
     font-family: monospace;
-    padding: 0.3em;
-    margin: 0.1em;
+    font-size: 0.8em;
+    padding: 0.5em 0.4em 0.4em 0.4em;
+    margin: 0 0.4em;
     background-color: rgba(128, 128, 128, 0.1);
     border-radius: 0.2em;
+}
+
+li code:first-child {
+    margin-left: 0;
 }
 
 :root {

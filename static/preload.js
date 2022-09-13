@@ -23,7 +23,7 @@ async function load_page(url) {
     let api_url = "/api" + url
     if (!cache.has(api_url)) await get_page_data(api_url)
     let json = cache.get(api_url)
-    window.history.pushState(null, null, url)
+    history.pushState(null, null, url)
     article.innerHTML = json["div"]
     document.title = json["title"]
 }

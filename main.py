@@ -1,5 +1,7 @@
 from starlette.templating import Jinja2Templates
 from traceback import format_exc
+from contextlib import suppress
+from fastapi import Header
 from enum import Enum
 from core import *
 
@@ -20,16 +22,18 @@ class Universities(Enum):
 @app.get("/api/{university}", tags=["API"])
 @fine_log
 @cache_with_etag
-def get_university_md(request: Request, university: Universities):
-    try:
+def get_university_md(request: Request, university: Universities, x_bnu120_usage: str = Header()):
+    if x_bnu120_usage != "preload":
+        return PlainTextResponse("please contact me at admin@muspimerol.site before using our open APIs", 400)
+
+    with suppress(NotADirectoryError):
         html = University(university.value).html
         return ORJSONResponse({
             "div": template.get_template("div_article.xml").render({"name": university.name, "markdown": html}),
             "title": university.name
         })
 
-    except NotADirectoryError:
-        return ORJSONResponse(format_exc(chain=False), 404)
+    return ORJSONResponse(format_exc(chain=False), 404)
 
 
 @app.get("/{university}", responses={200: {"content": {"text/html": {}}}})
@@ -60,8 +64,12 @@ class Categories(Enum):
 @app.get("/api/{university}/{category}/{name}", tags=["API"])
 @fine_log
 @cache_with_etag
-def get_person_md(request: Request, university: Universities, category: Categories, name: str):
-    try:
+def get_person_md(request: Request, university: Universities, category: Categories, name: str,
+                  x_bnu120_usage: str = Header()):
+    if x_bnu120_usage != "preload":
+        return PlainTextResponse("please contact me at admin@muspimerol.site before using our open APIs", 400)
+
+    with suppress(NotADirectoryError, FileNotFoundError):
         person = Person(name, University(university.value), category.value)
         html = person.html
         return ORJSONResponse({
@@ -69,8 +77,7 @@ def get_person_md(request: Request, university: Universities, category: Categori
             "title": f"{name} - {university.value}{category.value}"
         })
 
-    except (NotADirectoryError, FileNotFoundError):
-        return PlainTextResponse(format_exc(chain=False), 404)
+    return PlainTextResponse(format_exc(chain=False), 404)
 
 
 @app.get("/{university}/{category}/{name}", responses={

@@ -125,18 +125,25 @@ li > p {
 }
 
 a {
+    color: inherit;
+    text-underline-offset: 0.2em;
+    text-decoration-thickness: from-font;
+}
+
+#article a {
+    text-underline-offset: 0.1em;
+}
+
+#footer a {
     position: relative;
     min-width: 5.5em;
     display: inline-block;
-    color: inherit;
     text-decoration: none;
     margin-right: 4px;
 }
 
-a:hover {
+#footer a:hover {
     text-decoration-line: underline;
-    text-underline-offset: 0.2em;
-    text-decoration-thickness: from-font;
 }
 
 .university > h3, .category > h4 {
@@ -157,6 +164,14 @@ a:hover {
     .university {
         flex-direction: row;
     }
+}
+
+code {
+    font-family: monospace;
+    padding: 0.3em;
+    margin: 0.1em;
+    background-color: rgba(128, 128, 128, 0.1);
+    border-radius: 0.2em;
 }
 
 :root {

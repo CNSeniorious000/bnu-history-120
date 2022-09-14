@@ -40,8 +40,11 @@ strong {
 
 #markdown a {
     color: var(--primary-color);
-    filter: brightness(300%);
     font-weight: 500;
+}
+
+#markdown p > a, #markdown li > a {
+    filter: brightness(300%);
 }
 
 .university a {

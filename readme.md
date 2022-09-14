@@ -28,6 +28,7 @@
      2. **鼠标点击**，触发dom更新（用`innerHTML`直接修改）、url更新（通过`history.pushState`压栈）
      3. 监听`window.onpopstate`事件，触发dom更新
      4. 预加载缓存（用一个简单的`Map`实现）跨页面共享，因此也比`<link rel="prefetch">`省流
+  4. 对所有数据请求检查etag, 尽量返回304状态码
 - 提供了各种 icon
   - `apple-touch-icon` [180x180](/icon/apple-touch-icon-180.png) [167x167](/icon/apple-touch-icon-167.png) [152x152](/icon/apple-touch-icon-152.png) [128x128](/icon/apple-touch-icon-128.png)
   - `favicon` [svg](/icon/favicon.svg) [png](/icon/favicon.png) [ico](/icon/favicon.ico)

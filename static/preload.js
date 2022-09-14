@@ -41,9 +41,15 @@ function patch(node) {
     let api_url = "/api" + url
     node.onmouseenter = (event) => preload(api_url)
     node.onclick = (event) => {
-        load_page(url).then(() => scrollTo({top: 0, behavior: "smooth"}))
+        // noinspection JSCheckFunctionSignatures
+        scrollTo({top: 0, behavior: "instant"})
+        load_page(url).then(null)
         return false
     }
 }
 
-document.querySelectorAll("a").forEach(patch)
+function patch_all() {
+    document.querySelectorAll("a").forEach(patch)
+}
+
+patch_all()

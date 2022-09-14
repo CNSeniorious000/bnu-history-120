@@ -30,8 +30,8 @@
      4. 预加载缓存（用一个简单的`Map`实现）跨页面共享，因此也比`<link rel="prefetch">`省流
   4. 对所有数据请求检查etag, 尽量返回304状态码
 - 提供了各种 icon
-  - `apple-touch-icon` [180x180](/icon/apple-touch-icon-180.png) [167x167](/icon/apple-touch-icon-167.png) [152x152](/icon/apple-touch-icon-152.png) [128x128](/icon/apple-touch-icon-128.png)
-  - `favicon` [svg](/icon/favicon.svg) [png](/icon/favicon.png) [ico](/icon/favicon.ico)
+  - `apple-touch-icon`[180x180](/icon/apple-touch-icon-180.png) [167x167](/icon/apple-touch-icon-167.png) [152x152](/icon/apple-touch-icon-152.png) [128x128](/icon/apple-touch-icon-128.png)
+  - `favicon`[svg](/icon/favicon.svg) [png](/icon/favicon.png) [ico](/icon/favicon.ico)
 
 ### 开放平台 | API 文档
 

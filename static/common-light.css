@@ -33,6 +33,10 @@ hr {
     background-color: #EEE;
 }
 
-a:hover {
+a {
     color: var(--primary-color);
+}
+
+a:hover {
+    text-decoration: underline;
 }

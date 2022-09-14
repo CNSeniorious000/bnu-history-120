@@ -38,11 +38,7 @@ strong {
     background-color: black;
 }
 
-a {
-    color: inherit;
-}
-
-#article p > a {
+#markdown a {
     color: var(--primary-color);
     filter: brightness(300%);
     font-weight: 500;

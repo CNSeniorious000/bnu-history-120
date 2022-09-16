@@ -43,7 +43,10 @@ window.onpopstate = async (event) => {
     current = location.href
     if (to.path === from.path) return console.assert(to.hash !== from.hash, [to.hash, from.hash])
     let api_url = "/api" + to.path
-    await get_page_data(api_url).then((json) => article.innerHTML = json["div"]).then(patch_hash_link)
+    await get_page_data(api_url).then((json) => {
+        article.innerHTML = json["div"]
+        document.title = json["title"]
+    }).then(patch_hash_link)
 }
 
 // patch all <a> tags

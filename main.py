@@ -9,6 +9,16 @@ template = Jinja2Templates("./static")
 TemplateResponse = template.TemplateResponse
 
 
+@app.get("/api/people.json", tags=["API"])
+@fine_log
+@cache_with_etag
+def get_all_people(request: Request):
+    return ORJSONResponse({
+        person.name: f"/{person.university}/{person.category}/{person.name}"
+        for person in University.get_all_people()
+    })
+
+
 class Universities(Enum):
     BNU = "北师大"
     FuJen = "辅大"

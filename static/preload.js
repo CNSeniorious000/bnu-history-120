@@ -19,14 +19,17 @@ async function get_page_data(api_url) {
     return cache.get(api_url) ?? await preload(api_url)
 }
 
+function push_state(url) {
+    history.pushState({url}, null, url)
+    current = location.href
+}
+
 async function load_page(url) {
     let api_url = "/api" + url
     if (!cache.has(api_url)) await get_page_data(api_url)
     let json = cache.get(api_url)
-    history.pushState({url}, null, url)
     article.innerHTML = json["div"]
     document.title = json["title"]
-    current = location.href
 }
 
 function split_hash(href) {
@@ -62,9 +65,9 @@ function patch(node) {
     let api_url = "/api" + url
     node.onmouseenter = (event) => preload(api_url)
     node.onclick = (event) => {
-        if (!current.includes("#")) scrollTo({top: 0, behavior: `instant`})
-        load_page(url).then(patch_hash_link)
-        scrollTo({top: 0, behavior: "instant"})
+        load_page(url).then(() => {
+            if (!current.includes("#")) scrollTo({top: 0, behavior: `instant`})
+        }).then(push_state).then(patch_hash_link)
         return false
     }
 }

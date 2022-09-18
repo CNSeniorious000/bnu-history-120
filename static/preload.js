@@ -67,6 +67,7 @@ function patch(node) {
     node.onclick = (event) => {
         load_page(url).then(() => {
             if (!current.includes("#")) scrollTo({top: 0, behavior: `instant`})
+            return url
         }).then(push_state).then(patch_hash_link)
         return false
     }

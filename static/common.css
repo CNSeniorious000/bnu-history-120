@@ -113,9 +113,6 @@ li > p {
 
 #footer {
     position: relative;
-}
-
-#footer > footer {
     padding: calc(min(10%, 7em));
 }
 
@@ -177,4 +174,33 @@ li code:first-child {
 
 :root {
     --primary-color: #AF1E24;
+}
+
+#footer > a {
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: sans-serif;
+    font-size: 14px;
+}
+
+#links {
+    position: relative;
+    text-align: center;
+    margin-top: 6em;
+}
+
+#links a {
+    margin: 2px;
+    padding: 0;
+    min-width: 0;
+}
+
+#links img {
+    opacity: 1;
+    width: 20px;
+    transition-duration: 300ms;
+}
+
+#links img:hover {
+    filter: brightness(120%);
 }

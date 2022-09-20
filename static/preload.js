@@ -58,7 +58,7 @@ function patch(node) {
     // noinspection JSCheckFunctionSignatures
     console.assert(node.nodeName === "A", node.nodeName)
     let href = new URL(node.href)
-    console.assert(location.host === href.host, {from: location.host, to: href.host})
+    if (location.host !== href.host) return console.warn({from: location.host, to: href.host})
     if (location.pathname === href.pathname && location.search === href.search && location.host === href.host) {
         node.onclick = event => history.replaceState(null, null, node.href)
     }

@@ -7,6 +7,7 @@ from core import *
 
 template = Jinja2Templates("./static")
 TemplateResponse = template.TemplateResponse
+app.mount("/static/", StaticFiles(directory="./static/"))
 
 
 @app.get("/api/people.json", tags=["API"])
@@ -129,6 +130,3 @@ def get_person_info(request: Request, university: Universities, category: Catego
 def home_page(request: Request):
     return RedirectResponse("/about", 302)
     # return FileResponse("./static/index.html")
-
-
-app.mount("/", StaticFiles(directory="./static/"))

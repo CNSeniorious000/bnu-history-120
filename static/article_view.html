@@ -8,10 +8,10 @@
     <!--<link rel="stylesheet" href="/common-dark.css" media="(prefers-color-scheme: dark)">-->
     <!--<link rel="icon" href="/icon/myself.svg" type="image/svg+xml">-->
     <link rel="icon" href="/icon/favicon.png" type="image/png">
-    <link rel="apple-touch-icon" sizes="180x180" href="/icon/apple-touch-icon-180.png">
-    <link rel="apple-touch-icon" sizes="167x167" href="/icon/apple-touch-icon-167.png">
-    <link rel="apple-touch-icon" sizes="152x152" href="/icon/apple-touch-icon-152.png">
-    <link rel="apple-touch-icon" sizes="128x128" href="/icon/apple-touch-icon-128.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/static/icon/apple-touch-icon-180.png">
+    <link rel="apple-touch-icon" sizes="167x167" href="/static/icon/apple-touch-icon-167.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="/static/icon/apple-touch-icon-152.png">
+    <link rel="apple-touch-icon" sizes="128x128" href="/static/icon/apple-touch-icon-128.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet"
@@ -49,16 +49,16 @@
         </footer>
         <div id="links">
             <a href="https://github.com/tiangolo/fastapi" title="we use FastAPI for web framework">
-                <img src="/icon/fastapi.svg" alt="FastAPI">
+                <img src="/static/icon/fastapi.svg" alt="FastAPI">
             </a>
             <a href="https://github.com/pallets/jinja" title="we use Jinja2 to SSR html">
-                <img src="/icon/jinja.svg" alt="Jinja2">
+                <img src="/static/icon/jinja.svg" alt="Jinja2">
             </a>
             <a href="https://github.com/trentm/python-markdown2" title="we use python-markdown2 to render markdown">
-                <img src="/icon/markdown.svg" alt="python-markdown2">
+                <img src="/static/icon/markdown.svg" alt="python-markdown2">
             </a>
             <a href="https://github.com/fullonic/brotli-asgi" title="we use brotli-asgi to support br compression">
-                <img src="/icon/brotli.svg" alt="brotli-asgi">
+                <img src="/static/icon/brotli.svg" alt="brotli-asgi">
             </a>
         </div>
         <a href="https://beian.miit.gov.cn/"> 粤ICP备2022084804号-2 </a>
@@ -66,7 +66,7 @@
 </div>
 </body>
 {% if not non_preload %}
-    <script src="/preload.js"></script>
+    <script src="/static/preload.js"></script>
 {% endif %}
 <script>
     for (h of document.querySelectorAll("#markdown [id]")) h.innerHTML = `<a href="#${h.id}">${h.innerHTML}</a>`

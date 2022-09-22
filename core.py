@@ -14,7 +14,7 @@ app.add_middleware(BrotliMiddleware, quality=11)
 @app.get("/favicon.ico", include_in_schema=False)
 @fine_log
 def get_favicon_ico(request: Request):
-    return RedirectResponse("/icon/favicon.ico")
+    return RedirectResponse("/static/icon/favicon.ico")
 
 
 @app.get("/{filename}.css", include_in_schema=False)

@@ -1,6 +1,5 @@
-from starlette.staticfiles import StaticFiles
-from urllib.parse import urlparse
 from brotli_asgi import BrotliMiddleware
+from urllib.parse import urlparse
 from fastapi.responses import *
 from fastapi import FastAPI
 from person import *
@@ -15,6 +14,13 @@ app.add_middleware(BrotliMiddleware, quality=11)
 @fine_log
 def get_favicon_ico(request: Request):
     return RedirectResponse("/static/icon/favicon.ico")
+
+
+@app.get("/robots.txt", responses={200: {"content": {"text/plain": {}}}})
+@fine_log
+def on_scraper(request: Request):
+    print(request.headers)
+    return PlainTextResponse("User-agent: *\nAllow: /")
 
 
 @app.get("/{filename}.css", include_in_schema=False)

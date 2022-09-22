@@ -1,4 +1,5 @@
 from starlette.templating import Jinja2Templates
+from starlette.staticfiles import StaticFiles
 from traceback import format_exc
 from contextlib import suppress
 from fastapi import Header

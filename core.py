@@ -9,14 +9,6 @@ from tools import *
 app = FastAPI(title="BNU 120 years 🎉", description=open("readme.md", encoding="utf-8").read(), version="dev",
               contact={"name": "Muspi Merol", "url": "https://muspimerol.site/", "email": "admin@muspimerol.site"})
 app.add_middleware(BrotliMiddleware, quality=11)
-app.mount("/icon/", StaticFiles(directory="./static/icon/"))
-
-
-@app.get("/robots.txt", responses={200: {"content": {"text/plain": {}}}})
-@fine_log
-def on_scraper(request: Request):
-    print(request.headers)
-    return PlainTextResponse("User-agent: *\nAllow: /")
 
 
 @app.get("/favicon.ico", include_in_schema=False)
@@ -50,12 +42,6 @@ def render_css(request: Request, filename: str):
         "@media (prefers-color-scheme: light) {", light, "}",
         "@media (prefers-color-scheme: dark) {", dark, "}"
     )), media_type="text/css")
-
-
-@app.get("/preload.js", include_in_schema=False)
-@fine_log
-def get_preload_script(request: Request):
-    return FileResponse("./static/preload.js")
 
 
 @app.get("/{filename}.svg", include_in_schema=False)

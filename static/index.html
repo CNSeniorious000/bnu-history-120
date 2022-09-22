@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="/parallax.js"></script>
+    <style>
+        #scene {
+            position: fixed;
+            right: 50%;
+            bottom: 50%;
+            transform: translate(50%, 50%);
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+            opacity: 20%;
+            font-size: 1em;
+            display: block;
+            position: fixed;
+            width: max-content;
+            font-family: serif;
+        }
+
+        a:hover {
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+
+<div id="scene">
+</div>
+
+</body>
+<script>
+    const scene = document.getElementById("scene")
+
+    function add_person(name, href) {
+        let a = document.createElement("a")
+        a.href = href
+        let depth = Math.random() * 50
+        a.innerHTML = name + depth.toPrecision(1)
+
+        a.setAttribute("data-depth", depth.toString())
+        // a.style.scale = `${depth * 10}%`
+        scene.appendChild(a)
+    }
+
+    fetch("/api/people.json").then(response => {
+        return response.json()
+    }).then(people => {
+        for (let name in people) {
+            add_person(name, people[name])
+        }
+        new Parallax(scene)
+        for (a of scene.children) {
+            let depth = a.getAttribute("data-depth")
+            a.style.left = `${(Math.random() * 600 - 300) * depth / 10}pt`
+            a.style.top = `${(Math.random() * 600 - 300) * depth / 10}pt`
+        }
+    })
+
+</script>
+</html>

@@ -46,6 +46,19 @@ def get_university_md(request: Request, university: Universities, x_bnu120_usage
     return ORJSONResponse(format_exc(chain=False), 404)
 
 
+@app.get("/about", include_in_schema=False)
+@fine_log
+def about_page(request: Request):
+    return TemplateResponse("article_view.html", {
+        "request": request,
+        "non_preload": True,
+        "title": "🏗 under construction",
+        "name": "readme.md",
+        "markdown": markdown_path("./readme.md", extras=extras),
+        "universities": University.universities
+    })
+
+
 @app.get("/{university}", responses={200: {"content": {"text/html": {}}}})
 @fine_log
 @cache_with_etag
@@ -114,11 +127,8 @@ def get_person_info(request: Request, university: Universities, category: Catego
 @app.get("/", include_in_schema=False)
 @fine_log
 def home_page(request: Request):
-    return TemplateResponse("article_view.html", {
-        "request": request,
-        "non_preload": True,
-        "title": "🏗 under construction",
-        "name": "readme.md",
-        "markdown": markdown_path("./readme.md", extras=extras),
-        "universities": University.universities
-    })
+    return RedirectResponse("/about", 302)
+    # return FileResponse("./static/index.html")
+
+
+app.mount("/", StaticFiles(directory="./static/"))

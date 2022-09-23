@@ -1,9 +1,5 @@
 from fastapi import Response, Request
-from urllib.parse import unquote
-from time import perf_counter_ns
-from datetime import datetime
 from functools import wraps
-from loguru import logger
 from hashlib import md5
 
 
@@ -14,39 +10,6 @@ def get_etag(response: Response):
 def add_etag(response: Response):
     response.headers["ETag"] = get_etag(response)
     return response
-
-
-def fine_log(handler):
-    assert callable(handler)
-
-    @wraps(handler)
-    def inner(request: Request, *args, **kwargs):
-        now = datetime.now()
-        response: Response = handler(request, *args, **kwargs)
-
-        t = perf_counter_ns()
-        match response.status_code // 100:
-            case 2:
-                log = logger.debug
-            case 3:
-                log = logger.success
-            case 4:
-                log = logger.error
-            case 5:
-                log = logger.critical
-            case _:
-                log = logger.info
-
-        log(" ".join((
-            f"[{response.status_code}]",
-            f"{now.month}月{now.day}日 {now.hour}:{now.minute}:{now.second}",
-            f"in {(perf_counter_ns() - t) // 1000}ms",
-            f"to {unquote(str(request.url))}"
-        )))
-
-        return response
-
-    return inner
 
 
 def cache_with_etag(handler):

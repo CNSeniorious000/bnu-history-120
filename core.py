@@ -1,7 +1,10 @@
+from urllib.parse import urlparse, unquote
 from brotli_asgi import BrotliMiddleware
-from urllib.parse import urlparse
+from time import perf_counter_ns
 from fastapi.responses import *
+from datetime import datetime
 from fastapi import FastAPI
+from loguru import logger
 from person import *
 from tools import *
 
@@ -10,21 +13,39 @@ app = FastAPI(title="BNU 120 years 🎉", description=open("readme.md", encoding
 app.add_middleware(BrotliMiddleware, quality=11)
 
 
+@app.middleware("http")
+async def fine_log(request: Request, call_next):
+    now = datetime.now()
+    response: Response = await call_next(request)
+    t = perf_counter_ns()
+    log = {
+        2: logger.debug,
+        3: logger.success,
+        4: logger.error,
+        5: logger.critical
+    }[response.status_code // 100]
+    log(" ".join((
+        f"[{response.status_code}]",
+        f"{now.month}月{now.day}日 {now.hour}:{now.minute}:{now.second}",
+        f"in {(perf_counter_ns() - t) // 1000}ms",
+        f"to {unquote(str(request.url))}"
+    )))
+
+    return response
+
+
 @app.get("/favicon.ico", include_in_schema=False)
-@fine_log
 def get_favicon_ico(request: Request):
     return RedirectResponse("/static/icon/favicon.ico")
 
 
 @app.get("/robots.txt", responses={200: {"content": {"text/plain": {}}}})
-@fine_log
 def on_scraper(request: Request):
     print(request.headers)
     return PlainTextResponse("User-agent: *\nAllow: /")
 
 
 @app.get("/{filename}.css", include_in_schema=False)
-@fine_log
 @cache_with_etag
 def render_css(request: Request, filename: str):
     main_css_path = f"./static/{filename}.css"
@@ -51,7 +72,6 @@ def render_css(request: Request, filename: str):
 
 
 @app.get("/{filename}.svg", include_in_schema=False)
-@fine_log
 @cache_with_etag
 def get_svg_asset(request: Request, filename: str):
     try:

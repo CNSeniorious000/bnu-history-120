@@ -12,7 +12,6 @@ app.mount("/static/", StaticFiles(directory="./static/"))
 
 
 @app.get("/api/people.json", tags=["API"])
-@fine_log
 @cache_with_etag
 def get_all_people(request: Request):
     return ORJSONResponse({
@@ -32,7 +31,6 @@ class Universities(Enum):
 
 
 @app.get("/api/{university}", tags=["API"])
-@fine_log
 @cache_with_etag
 def get_university_md(request: Request, university: Universities, x_bnu120_usage: str = Header()):
     if x_bnu120_usage != "preload":
@@ -49,7 +47,6 @@ def get_university_md(request: Request, university: Universities, x_bnu120_usage
 
 
 @app.get("/about", include_in_schema=False)
-@fine_log
 def about_page(request: Request):
     return TemplateResponse("article_view.html", {
         "request": request,
@@ -62,7 +59,6 @@ def about_page(request: Request):
 
 
 @app.get("/{university}", responses={200: {"content": {"text/html": {}}}})
-@fine_log
 @cache_with_etag
 def get_university_info(request: Request, university: Universities):
     try:
@@ -87,7 +83,6 @@ class Categories(Enum):
 
 
 @app.get("/api/{university}/{category}/{name}", tags=["API"])
-@fine_log
 @cache_with_etag
 def get_person_md(request: Request, university: Universities, category: Categories, name: str,
                   x_bnu120_usage: str = Header()):
@@ -108,7 +103,6 @@ def get_person_md(request: Request, university: Universities, category: Categori
 @app.get("/{university}/{category}/{name}", responses={
     200: {"content": {"text/html": {}}}, 404: {"content": {"text/plain": {}}}
 })
-@fine_log
 @cache_with_etag
 def get_person_info(request: Request, university: Universities, category: Categories, name: str):
     try:
@@ -127,7 +121,6 @@ def get_person_info(request: Request, university: Universities, category: Catego
 
 
 @app.get("/", include_in_schema=False)
-@fine_log
 def home_page(request: Request):
     return RedirectResponse("/about", 302)
     # return FileResponse("./static/index.html")

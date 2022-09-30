@@ -45,7 +45,7 @@ class University:
 
     @cached_property
     def html(self):
-        return markdown_path(f"{self.path}/index.md", extras=extras)
+        return mark_people(markdown_path(f"{self.path}/index.md", extras=extras))
 
     def __repr__(self):
         return self.name
@@ -88,7 +88,7 @@ class Person:
 
     @cached_property
     def html(self):
-        return markdown(self.content, extras=extras)
+        return markdown(mark_people(self.content), extras=extras)
 
     def __repr__(self):
         return self.name
@@ -103,3 +103,12 @@ class Person:
 University("北师大", ["教师", "校友", "校长"], "北京师范大学")
 University("女高师", ["教师", "校友", "校长"], "北京女子高等师范学校")
 University("辅大", ["教师", "校友", "校长", "创始人"], "辅仁大学")
+
+all_people = University.get_all_people()
+
+
+def mark_people(text: str):
+    for person in all_people:
+        if (name := person.name) in text and (span := f"<span>{name}</span>") not in text:
+            text = text.replace(name, span)
+    return text

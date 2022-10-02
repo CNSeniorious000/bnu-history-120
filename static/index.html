@@ -48,10 +48,8 @@
         scene.appendChild(a)
     }
 
-    fetch("/api/people.json").then(response => {
-        return response.json()
-    }).then(people => {
-        for (let name in people) {
+    fetch("/api/people/list").then(response => response.json()).then(people => {
+        for (let name of people) {
             add_person(name, people[name])
         }
         new Parallax(scene)

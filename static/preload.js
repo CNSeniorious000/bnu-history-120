@@ -40,7 +40,7 @@ function split_hash(href) {
     }
 }
 
-window.onpopstate = async event => {
+window.onpopstate = async () => {
     let to = split_hash(location.href)
     let from = split_hash(current)
     current = location.href
@@ -54,37 +54,55 @@ window.onpopstate = async event => {
 
 // patch all <a> tags
 
-function patch(node) {
+function enable_preloading(node) {
     // noinspection JSCheckFunctionSignatures
     console.assert(node.nodeName === "A", node.nodeName)
     let href = new URL(node.href)
     if (location.host !== href.host) return console.warn({from: location.host, to: href.host})
     if (location.pathname === href.pathname && location.search === href.search && location.host === href.host) {
-        node.onclick = event => history.replaceState(null, null, node.href)
+        node.onclick = () => history.replaceState(null, null, node.href)
     }
     let url = href.pathname
     let api_url = "/api" + url
-    node.onmouseenter = event => preload(api_url)
-    node.onclick = event => {
+    node.onmouseenter = () => preload(api_url)
+    node.onclick = () => {
         load_page(url).then(() => {
-            // noinspection JSCheckFunctionSignatures
-            if (!current.includes("#")) scrollTo({top: 0, behavior: "instant"})
+            if (!current.includes("#"))
+                // noinspection JSCheckFunctionSignatures
+                scrollTo({top: 0, behavior: "instant"})
             return url
         }).then(push_state).then(patch_hash_link).then(() => {
             // noinspection JSCheckFunctionSignatures
             scrollTo({top: 0, behavior: "instant"})
-        })
+        }).then(patch_person_info)
         return false
     }
 }
 
-function patch_all() {
-    document.querySelectorAll("a").forEach(patch)
+function patch_all_preloading() {
+    document.querySelectorAll("a").forEach(enable_preloading)
 }
 
 function patch_hash_link() {
-    for (h of document.querySelectorAll("#markdown [id]"))
+    for (let h of document.querySelectorAll("#markdown [id]"))
         h.innerHTML = `<a href="#${h.id}">${h.innerHTML}</a>`
 }
 
-patch_all()
+const person_info_map = null
+
+async function get_person_links(name) {
+    let map = person_info_map ?? await (await fetch("/api/people/dict")).json()
+    return map[name]
+}
+
+function add_tooltip_creator(span) {
+    let name = span.innerText
+    span.onmouseenter = () => get_person_links(name).then(console.log)
+}
+
+function patch_person_info() {
+    document.querySelectorAll("span").forEach(add_tooltip_creator)
+}
+
+patch_all_preloading()
+patch_person_info()

@@ -9,7 +9,8 @@ from person import *
 from tools import *
 
 app = FastAPI(title="BNU 120 years 🎉", description=open("readme.md", encoding="utf-8").read(), version="dev",
-              contact={"name": "Muspi Merol", "url": "https://muspimerol.site/", "email": "admin@muspimerol.site"})
+              contact={"name": "Muspi Merol", "url": "https://muspimerol.site/", "email": "admin@muspimerol.site"},
+              default_response_class=ORJSONResponse)
 app.add_middleware(BrotliMiddleware, quality=11)
 
 

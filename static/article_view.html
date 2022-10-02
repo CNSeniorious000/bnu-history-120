@@ -69,6 +69,6 @@
     <script src="/static/preload.js"></script>
 {% endif %}
 <script>
-    for (h of document.querySelectorAll("#markdown [id]")) h.innerHTML = `<a href="#${h.id}">${h.innerHTML}</a>`
+    for (let h of document.querySelectorAll("#markdown [id]")) h.innerHTML = `<a href="#${h.id}">${h.innerHTML}</a>`
 </script>
 </html>

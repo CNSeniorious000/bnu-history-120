@@ -11,13 +11,25 @@ TemplateResponse = template.TemplateResponse
 app.mount("/static/", StaticFiles(directory="./static/"))
 
 
-@app.get("/api/people.json", tags=["API"])
+@app.get("/api/people/list", tags=["API"])
 @cache_with_etag
-def get_all_people(request: Request):
-    return ORJSONResponse({
-        person.name: f"/{person.university}/{person.category}/{person.name}"
-        for person in University.get_all_people()
-    })
+@cache
+def get_name_set(request: Request):
+    return ORJSONResponse(list({person.name for person in University.get_all_people()}))
+
+
+@app.get("/api/people/dict", tags=["API"])
+@cache_with_etag
+@cache
+def get_people_map(request: Request):
+    name_map = {}
+    for person in University.get_all_people():
+        if path_list := name_map.get(person.name):
+            path_list.append(f"/{person.university}/{person.category}/{person.name}")
+        else:
+            name_map[person.name] = [f"/{person.university}/{person.category}/{person.name}"]
+
+    return ORJSONResponse(name_map)
 
 
 class Universities(Enum):

@@ -66,7 +66,51 @@
 </div>
 </body>
 {% if not non_preload %}
-    <script src="/static/preload.js"></script>
+    <script src="/static/preload.js" defer></script>
+    <script src="https://unpkg.com/@popperjs/core@2/dist/umd/popper.js"></script>
+    <link rel="stylesheet" href="/static/tooltip.css">
+    <div id="tooltip" role="tooltip">
+        <div id="tips"></div>
+        <div id="arrow" data-popper-arrow></div>
+    </div>
+    <script>
+        const tooltip = document.getElementById("tooltip")
+        const tips = document.getElementById("tips")
+
+        let popperInstance = null
+
+        function createPopper(span, links) {
+
+            tips.innerHTML = ""
+            for (let url of links) {
+                let a = document.createElement("A")
+                a.href = url
+                a.innerText = url
+                tips.appendChild(a)
+            }
+
+            popperInstance = Popper.createPopper(span, tooltip, {
+                placement: "top",
+                modifiers: [
+                    {name: "offset", options: {offset: [0, 4]}},
+                    {name: "flip", enabled: true}
+                ],
+            })
+        }
+
+        function switchPopper(enable) {
+            if (popperInstance === null) return
+            popperInstance.setOptions(options => {
+                return {
+                    ...options,
+                    modifiers: [
+                        ...options.modifiers,
+                        {name: 'eventListeners', enabled: enable},
+                    ],
+                };
+            })
+        }
+    </script>
 {% endif %}
 <script>
     for (let h of document.querySelectorAll("#markdown [id]")) h.innerHTML = `<a href="#${h.id}">${h.innerHTML}</a>`

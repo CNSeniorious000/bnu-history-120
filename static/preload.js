@@ -64,7 +64,7 @@ function enable_preloading(node) {
     }
     let url = href.pathname
     let api_url = "/api" + url
-    node.onmouseenter = () => preload(api_url)
+    node.onmouseenter = () => preload(api_url)  // BUG: can't enable preloading features
     node.onclick = () => {
         load_page(url).then(() => {
             if (!current.includes("#"))
@@ -88,20 +88,50 @@ function patch_hash_link() {
         h.innerHTML = `<a href="#${h.id}">${h.innerHTML}</a>`
 }
 
-const person_info_map = null
+let person_info_map = null
 
 async function get_person_links(name) {
-    let map = person_info_map ?? await (await fetch("/api/people/dict")).json()
-    return map[name]
+    if (person_info_map === null) person_info_map = await (await fetch("/api/people/dict")).json()
+    return person_info_map[name]
+}
+
+let tip_hovered = false
+let span_hovered = false
+
+function on_span_focus() {
+    span_hovered = true
+    tooltip.setAttribute("data-show", "")
+    switchPopper(true)
+    if (popperInstance !== null) popperInstance.update()
+    tips.childNodes.forEach(enable_preloading)
+}
+
+function on_span_blur() {
+    span_hovered = false
+    setTimeout(() => {
+        if (span_hovered) return
+
+        let taskId = setInterval(() => {
+            if (!tip_hovered && !span_hovered) {
+                tooltip.removeAttribute("data-show")
+                switchPopper(false)
+                clearInterval(taskId)
+            }
+        }, 1000 / 60)
+    }, 200)
 }
 
 function add_tooltip_creator(span) {
-    let name = span.innerText
-    span.onmouseenter = () => get_person_links(name).then(console.log)
+    ["mouseenter", "focus"].forEach(e => span.addEventListener(e, on_span_focus));
+    ["mouseleave", "blur"].forEach(e => span.addEventListener(e, on_span_blur));
+    span.onmouseenter = () => get_person_links(span.innerText).then(links => createPopper(span, links))
 }
 
 function patch_person_info() {
-    document.querySelectorAll("span").forEach(add_tooltip_creator)
+    document.querySelectorAll("span").forEach(add_tooltip_creator);
+    ["mouseenter", "focus"].forEach(e => tooltip.addEventListener(e, () => tip_hovered = true));
+    ["mouseleave", "blur"].forEach(e => tooltip.addEventListener(e, () => tip_hovered = false));
+
 }
 
 patch_all_preloading()

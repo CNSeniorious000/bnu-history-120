@@ -49,7 +49,7 @@ window.onpopstate = async () => {
     await get_page_data(api_url).then(json => {
         article.innerHTML = json["div"]
         document.title = json["title"]
-    }).then(patch_hash_link)
+    }).then(patch_hash_link).then(() => document.querySelectorAll("span").forEach(add_tooltip_creator))
 }
 
 // patch all <a> tags

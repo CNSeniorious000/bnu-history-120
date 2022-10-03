@@ -60,7 +60,11 @@ function enable_preloading(node) {
     let href = new URL(node.href)
     if (location.host !== href.host) return console.warn({from: location.host, to: href.host})
     if (location.pathname === href.pathname && location.search === href.search && location.host === href.host) {
-        node.onclick = () => history.replaceState(null, null, node.href)
+        node.onclick = () => {
+            history.replaceState(null, null, node.href)
+            return false
+        }
+        return
     }
     let url = href.pathname
     let api_url = "/api" + url
@@ -74,7 +78,9 @@ function enable_preloading(node) {
         }).then(push_state).then(patch_hash_link).then(() => {
             // noinspection JSCheckFunctionSignatures
             scrollTo({top: 0, behavior: "instant"})
-        }).then(patch_person_info)
+        }).then(patch_person_info).then(() => {
+            tip_hovered = span_hovered = false
+        })
         return false
     }
 }
@@ -103,7 +109,6 @@ function on_span_focus() {
     tooltip.setAttribute("data-show", "")
     switchPopper(true)
     if (popperInstance !== null) popperInstance.update()
-    tips.childNodes.forEach(enable_preloading)
 }
 
 function on_span_blur() {
@@ -124,14 +129,17 @@ function on_span_blur() {
 function add_tooltip_creator(span) {
     ["mouseenter", "focus"].forEach(e => span.addEventListener(e, on_span_focus));
     ["mouseleave", "blur"].forEach(e => span.addEventListener(e, on_span_blur));
-    span.onmouseenter = () => get_person_links(span.innerText).then(links => createPopper(span, links))
+    span.onmouseenter = () => get_person_links(span.innerText).then(
+        links => createPopper(span, links)
+    ).then(
+        () => tips.childNodes.forEach(enable_preloading)
+    )
 }
 
 function patch_person_info() {
     document.querySelectorAll("span").forEach(add_tooltip_creator);
     ["mouseenter", "focus"].forEach(e => tooltip.addEventListener(e, () => tip_hovered = true));
     ["mouseleave", "blur"].forEach(e => tooltip.addEventListener(e, () => tip_hovered = false));
-
 }
 
 patch_all_preloading()

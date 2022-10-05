@@ -144,3 +144,4 @@ function patch_person_info() {
 
 patch_all_preloading()
 patch_person_info()
+patch_hash_link()

@@ -60,11 +60,7 @@ function enable_preloading(node) {
     let href = new URL(node.href)
     if (location.host !== href.host) return console.warn({from: location.host, to: href.host})
     if (location.pathname === href.pathname && location.search === href.search && location.host === href.host) {
-        node.onclick = () => {
-            history.replaceState(null, null, node.href)
-            return false
-        }
-        return
+        node.onclick = () => history.replaceState(null, null, node.href)
     }
     let url = href.pathname
     let api_url = "/api" + url

@@ -4,7 +4,9 @@ from time import perf_counter_ns
 from fastapi.responses import *
 from datetime import datetime
 from fastapi import FastAPI
+from rcssmin import cssmin
 from loguru import logger
+from rjsmin import jsmin
 from person import *
 from tools import *
 
@@ -17,8 +19,8 @@ app.add_middleware(BrotliMiddleware, quality=11)
 @app.middleware("http")
 async def fine_log(request: Request, call_next):
     now = datetime.now()
-    response: Response = await call_next(request)
     t = perf_counter_ns()
+    response: Response = await call_next(request)
     log = {
         2: logger.debug,
         3: logger.success,
@@ -28,7 +30,7 @@ async def fine_log(request: Request, call_next):
     log(" ".join((
         f"[{response.status_code}]",
         f"{now.month}月{now.day}日 {now.hour}:{now.minute}:{now.second}",
-        f"in {(perf_counter_ns() - t) // 1000}ms",
+        f"in {(perf_counter_ns() - t) // 1_000_000}ms",
         f"to {unquote(str(request.url))}"
     )))
 
@@ -65,11 +67,17 @@ def render_css(request: Request, filename: str):
     light = open(light_css_path).read()
     dark = open(dark_css_path).read()
 
-    return Response("\n".join((
+    return Response(cssmin("\n".join((
         main,
         "@media (prefers-color-scheme: light) {", light, "}",
         "@media (prefers-color-scheme: dark) {", dark, "}"
-    )), media_type="text/css")
+    ))), media_type="text/css")
+
+
+@app.get("/{filename:path}.js", include_in_schema=False)
+@cache_with_etag
+def get_compressed_javascript(request: Request, filename: str):
+    return Response(jsmin(open(f"./{filename}.js").read()), media_type="application/javascript")
 
 
 @app.get("/{filename}.svg", include_in_schema=False)

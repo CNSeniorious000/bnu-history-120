@@ -6,7 +6,7 @@ from fastapi import Header
 from enum import Enum
 from core import *
 
-template = Jinja2Templates("./static")
+template = Jinja2Templates("./static", trim_blocks=True, lstrip_blocks=True, keep_trailing_newline=True)
 TemplateResponse = template.TemplateResponse
 app.mount("/static/", StaticFiles(directory="./static/"))
 
@@ -42,7 +42,7 @@ class Universities(Enum):
         return University(self.value).full_name
 
 
-@app.get("/api/{university}", tags=["API"])
+@app.get("/preload/{university}", tags=["API"])
 @cache_with_etag
 def get_university_md(request: Request, university: Universities, x_bnu120_usage: str = Header()):
     if x_bnu120_usage != "preload":
@@ -94,7 +94,7 @@ class Categories(Enum):
     founder = "创始人"
 
 
-@app.get("/api/{university}/{category}/{name}", tags=["API"])
+@app.get("/preload/{university}/{category}/{name}", tags=["API"])
 @cache_with_etag
 def get_person_md(request: Request, university: Universities, category: Categories, name: str,
                   x_bnu120_usage: str = Header()):

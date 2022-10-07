@@ -66,7 +66,7 @@
 </div>
 </body>
 {% if not non_preload %}
-    <script src="/static/preload.js" defer></script>
+    <script src="/static/patches.js" defer></script>
     <script src="https://unpkg.com/@popperjs/core@2/dist/umd/popper.js"></script>
     <link rel="stylesheet" href="/static/tooltip.css">
     <div id="tooltip" role="tooltip">
@@ -80,7 +80,6 @@
         let popperInstance = null
 
         function createPopper(span, links) {
-
             tips.innerHTML = ""
             for (let url of links) {
                 let a = document.createElement("A")

@@ -12,6 +12,7 @@
     <link rel="apple-touch-icon" sizes="167x167" href="/static/icon/apple-touch-icon-167.png">
     <link rel="apple-touch-icon" sizes="152x152" href="/static/icon/apple-touch-icon-152.png">
     <link rel="apple-touch-icon" sizes="128x128" href="/static/icon/apple-touch-icon-128.png">
+    <link rel="canonical" href="https://bnu120.space{{ request.path }}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet"
@@ -67,49 +68,12 @@
 </body>
 {% if not non_preload %}
     <script src="/static/patches.js" defer></script>
-    <script src="https://unpkg.com/@popperjs/core@2/dist/umd/popper.js"></script>
+    <script src="https://unpkg.com/@popperjs/core@2/dist/umd/popper.js" defer></script>
     <link rel="stylesheet" href="/static/tooltip.css">
     <div id="tooltip" role="tooltip">
         <div id="tips"></div>
         <div id="arrow" data-popper-arrow></div>
     </div>
-    <script>
-        const tooltip = document.getElementById("tooltip")
-        const tips = document.getElementById("tips")
-
-        let popperInstance = null
-
-        function createPopper(span, links) {
-            tips.innerHTML = ""
-            for (let url of links) {
-                let a = document.createElement("A")
-                a.href = url
-                a.innerText = url
-                tips.appendChild(a)
-            }
-
-            popperInstance = Popper.createPopper(span, tooltip, {
-                placement: "top",
-                modifiers: [
-                    {name: "offset", options: {offset: [0, 4]}},
-                    {name: "flip", enabled: true}
-                ],
-            })
-        }
-
-        function switchPopper(enable) {
-            if (popperInstance === null) return
-            popperInstance.setOptions(options => {
-                return {
-                    ...options,
-                    modifiers: [
-                        ...options.modifiers,
-                        {name: 'eventListeners', enabled: enable},
-                    ],
-                };
-            })
-        }
-    </script>
 {% else %}
     <script>
         for (let h of document.querySelectorAll("#markdown [id]")) h.innerHTML = `<a href="#${h.id}">${h.innerHTML}</a>`

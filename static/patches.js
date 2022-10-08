@@ -143,6 +143,44 @@ function patch_person_info() {
     ["mouseleave", "blur"].forEach(e => tooltip.addEventListener(e, () => tip_hovered = false));
 }
 
+// initialize popper.js
+const tooltip = document.getElementById("tooltip")
+const tips = document.getElementById("tips")
+
+let popperInstance = null
+
+function createPopper(span, links) {
+    tips.innerHTML = ""
+    for (let url of links) {
+        let a = document.createElement("A")
+        a.href = url
+        a.innerText = url
+        tips.appendChild(a)
+    }
+
+    popperInstance = Popper.createPopper(span, tooltip, {
+        placement: "top",
+        modifiers: [
+            {name: "offset", options: {offset: [0, 4]}},
+            {name: "flip", enabled: true}
+        ],
+    })
+}
+
+function switchPopper(enable) {
+    if (popperInstance === null) return
+    popperInstance.setOptions(options => {
+        return {
+            ...options,
+            modifiers: [
+                ...options.modifiers,
+                {name: 'eventListeners', enabled: enable},
+            ],
+        };
+    })
+}
+
+
 patch_all_preloading()
 patch_person_info()
 patch_hash_link()

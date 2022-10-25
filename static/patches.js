@@ -8,15 +8,11 @@ const article = document.getElementById("article")
 
 let current = location.href
 
-function preload(preload_url) {
+function fetch_page(preload_url) {
     return cache.get(preload_url) ?? fetch(preload_url, preload_init_options).then(
         async response => cache.set(preload_url, await response.json()),
         (reason) => console.warn(reason)
     ).then(() => cache.get(preload_url))
-}
-
-async function get_page_data(preload_url) {
-    return cache.get(preload_url) ?? await preload(preload_url)
 }
 
 function push_state(url) {
@@ -26,7 +22,7 @@ function push_state(url) {
 
 async function load_page(url) {
     let preload_url = "/preload" + url
-    if (!cache.has(preload_url)) await get_page_data(preload_url)
+    if (!cache.has(preload_url)) await fetch_page(preload_url)
     let json = cache.get(preload_url)
     article.innerHTML = json["div"]
     document.title = json["title"]
@@ -47,7 +43,7 @@ window.onpopstate = async () => {
     current = location.href
     if (to.path === from.path) return console.assert(to.hash !== from.hash, [to.hash, from.hash])
     let preload_url = "/preload" + to.path
-    await get_page_data(preload_url).then(json => {
+    await fetch_page(preload_url).then(json => {
         article.innerHTML = json["div"]
         document.title = json["title"]
     }).then(patch_hash_link).then(() => document.querySelectorAll("span").forEach(add_tooltip_creator))
@@ -64,7 +60,7 @@ function enable_preloading(node) {
     }
     let url = href.pathname
     let preload_url = "/preload" + url
-    node.onmouseenter = () => preload(preload_url)
+    node.onmouseenter = () => fetch_page(preload_url)
     node.onclick = () => {
         load_page(url).then(() => {
             if (!current.includes("#"))
@@ -130,10 +126,14 @@ function add_tooltip_creator(span) {
     ["mouseenter", "focus"].forEach(e => span.addEventListener(e, on_span_focus));
     ["mouseleave", "blur"].forEach(e => span.addEventListener(e, on_span_blur));
     span.onmouseenter = () => get_person_links(span.innerText).then(
-        links => createPopper(span, links)
-    ).then(
-        () => tips.childNodes.forEach(enable_preloading)
-    )
+        links => {
+            createPopper(span, links)
+            return links
+        }
+    ).then(links => {
+        for (let url of links) fetch_page("/preload" + url)  // pre-preload
+        tips.childNodes.forEach(enable_preloading)
+    })
 }
 
 // make tooltips maintain themselves

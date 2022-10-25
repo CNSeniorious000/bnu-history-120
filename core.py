@@ -74,6 +74,11 @@ def render_css(request: Request, filename: str):
     ))), media_type="text/css")
 
 
+@app.get("/sw.js", include_in_schema=False)
+def get_service_worker(request: Request):
+    return get_compressed_javascript(request, "static/sw.js".removesuffix(".js"))
+
+
 @app.get("/{filename:path}.js", include_in_schema=False)
 @cache_with_etag
 def get_compressed_javascript(request: Request, filename: str):

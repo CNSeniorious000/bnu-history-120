@@ -1,0 +1,46 @@
+{
+  "name": "BNU 120 people wiki 📖",
+  "short_name": "bnu120",
+  "description": "A site to display stories of bnu-related people in the past 120 years",
+  "start_url": "/",
+  "display": "minimal-ui",
+  "background_color": "#AF1E24",
+  "icons": [
+    {
+      "src": "/static/icon/apple-touch-icon-180.png",
+      "sizes": "180x180",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/static/icon/apple-touch-icon-167.png",
+      "sizes": "167x167",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/static/icon/apple-touch-icon-152.png",
+      "sizes": "152x152",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/static/icon/apple-touch-icon-128.png",
+      "sizes": "128x128",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/static/icon/apple-touch-icon-114.png",
+      "sizes": "114x114",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/static/icon/favicon.svg",
+      "sizes": "128x128",
+      "type": "image/svg+xml"
+    }
+  ],
+  "lang": "zh-CN"
+}

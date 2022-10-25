@@ -71,7 +71,7 @@ function enable_preloading(node) {
             // noinspection JSCheckFunctionSignatures
             scrollTo({top: 0, behavior: "instant"})
         }).then(patch_person_info).then(() => {
-            tip_hovered = span_hovered = false
+            popper_hovered = button_hovered = false
         })
         return false
     }
@@ -96,23 +96,23 @@ async function get_person_links(name) {
 }
 
 // current situation
-let tip_hovered = false
-let span_hovered = false
+let popper_hovered = false
+let button_hovered = false
 
-function on_span_focus() {
-    span_hovered = true
+function on_button_focus() {
+    button_hovered = true
     tooltip.setAttribute("data-show", "")
     switchPopper(true)
     if (popperInstance !== null) popperInstance.update()
 }
 
-function on_span_blur() {
-    span_hovered = false
+function on_button_blur() {
+    button_hovered = false
     setTimeout(() => {
-        if (span_hovered) return
+        if (button_hovered) return
 
         let taskId = setInterval(() => {
-            if (!tip_hovered && !span_hovered) {
+            if (!popper_hovered && !button_hovered) {
                 tooltip.removeAttribute("data-show")
                 switchPopper(false)
                 clearInterval(taskId)
@@ -123,24 +123,23 @@ function on_span_blur() {
 
 // patch tooltip popper to <button> tags
 function add_tooltip_creator(button) {
-    ["mouseenter", "focus"].forEach(e => button.addEventListener(e, on_span_focus));
-    ["mouseleave", "blur"].forEach(e => button.addEventListener(e, on_span_blur));
-    button.onmouseenter = () => get_person_links(button.innerText).then(
-        links => {
+    ["mouseenter", "focus"].forEach(e => button.addEventListener(e, on_button_focus));
+    ["mouseleave", "blur"].forEach(e => button.addEventListener(e, on_button_blur));
+    ["mouseenter", "focus"].forEach(e => button.addEventListener(e,
+        () => get_person_links(button.innerText).then(links => {
             createPopper(button, links)
             return links
-        }
-    ).then(links => {
-        for (let url of links) fetch_page("/preload" + url)  // pre-preload
-        tips.childNodes.forEach(enable_preloading)
-    })
+        }).then(links => {
+            for (let url of links) fetch_page("/preload" + new URL(url, current).pathname)  // force url-encode
+            tips.childNodes.forEach(enable_preloading)
+        })));
 }
 
 // make tooltips maintain themselves
 function patch_person_info() {
     document.querySelectorAll("button").forEach(add_tooltip_creator);
-    ["mouseenter", "focus"].forEach(e => tooltip.addEventListener(e, () => tip_hovered = true));
-    ["mouseleave", "blur"].forEach(e => tooltip.addEventListener(e, () => tip_hovered = false));
+    ["mouseenter", "focus"].forEach(e => tooltip.addEventListener(e, () => popper_hovered = true));
+    ["mouseleave", "blur"].forEach(e => tooltip.addEventListener(e, () => popper_hovered = false));
 }
 
 // initialize popper.js

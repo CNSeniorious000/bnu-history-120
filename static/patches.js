@@ -46,7 +46,7 @@ window.onpopstate = async () => {
     await fetch_page(preload_url).then(json => {
         article.innerHTML = json["div"]
         document.title = json["title"]
-    }).then(patch_hash_link).then(() => document.querySelectorAll("span").forEach(add_tooltip_creator))
+    }).then(patch_hash_link).then(() => document.querySelectorAll("button").forEach(add_tooltip_creator))
 }
 
 // patch <a> tags
@@ -121,13 +121,13 @@ function on_span_blur() {
     }, 200)
 }
 
-// patch tooltip popper to <span> tags
-function add_tooltip_creator(span) {
-    ["mouseenter", "focus"].forEach(e => span.addEventListener(e, on_span_focus));
-    ["mouseleave", "blur"].forEach(e => span.addEventListener(e, on_span_blur));
-    span.onmouseenter = () => get_person_links(span.innerText).then(
+// patch tooltip popper to <button> tags
+function add_tooltip_creator(button) {
+    ["mouseenter", "focus"].forEach(e => button.addEventListener(e, on_span_focus));
+    ["mouseleave", "blur"].forEach(e => button.addEventListener(e, on_span_blur));
+    button.onmouseenter = () => get_person_links(button.innerText).then(
         links => {
-            createPopper(span, links)
+            createPopper(button, links)
             return links
         }
     ).then(links => {
@@ -138,7 +138,7 @@ function add_tooltip_creator(span) {
 
 // make tooltips maintain themselves
 function patch_person_info() {
-    document.querySelectorAll("span").forEach(add_tooltip_creator);
+    document.querySelectorAll("button").forEach(add_tooltip_creator);
     ["mouseenter", "focus"].forEach(e => tooltip.addEventListener(e, () => tip_hovered = true));
     ["mouseleave", "blur"].forEach(e => tooltip.addEventListener(e, () => tip_hovered = false));
 }
@@ -149,7 +149,7 @@ const tips = document.getElementById("tips")
 
 let popperInstance = null
 
-function createPopper(span, links) {
+function createPopper(button, links) {
     tips.innerHTML = ""
     for (let url of links) {
         let a = document.createElement("A")
@@ -158,7 +158,7 @@ function createPopper(span, links) {
         tips.appendChild(a)
     }
 
-    popperInstance = Popper.createPopper(span, tooltip, {
+    popperInstance = Popper.createPopper(button, tooltip, {
         placement: "top",
         modifiers: [
             {name: "offset", options: {offset: [0, 4]}},

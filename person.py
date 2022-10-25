@@ -109,6 +109,6 @@ all_people = University.get_all_people()
 
 def mark_people(text: str):
     for person in all_people:
-        if (name := person.name) in text and (span := f"<span>{name}</span>") not in text:
-            text = text.replace(name, span)
+        if (name := person.name) in text and (button := f'<button type="button">{name}</button>') not in text:
+            text = text.replace(name, button)
     return text

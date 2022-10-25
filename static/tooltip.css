@@ -43,9 +43,33 @@
     left: -4px;
 }
 
-span {
-    box-shadow: 0 5px 4px -5px var(--shadow-color);
+button {
+    display: inline;
+    padding: 0;
+    margin: 0;
+    border: inherit;
+    font: inherit;
+    background: none;
     cursor: help;
+}
+
+button:hover::before, button:hover::after {
+    color: var(--shadow-color);
+}
+
+button::before, button::after {
+    color: rgba(128,128,128,0.6);
+    transition: all 120ms;
+}
+
+button::before {
+    content: "{";
+    margin-right: 1px;
+}
+
+button::after {
+    content: "}";
+    margin-left: 1px;
 }
 
 #tips {
@@ -64,7 +88,7 @@ span {
         color: white;
     }
 
-    span {
+    button {
         --shadow-color: var(--primary-color);
     }
 }
@@ -75,7 +99,7 @@ span {
         color: black;
     }
 
-    span {
+    button {
         --shadow-color: white;
     }
 }

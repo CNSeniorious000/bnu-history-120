@@ -38,7 +38,7 @@
     },
     {
       "src": "/static/icon/favicon.svg",
-      "sizes": "128x128",
+      "sizes": "150x150",
       "type": "image/svg+xml"
     }
   ],

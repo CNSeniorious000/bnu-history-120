@@ -67,6 +67,7 @@
     </div>
 </div>
 </body>
+<script defer> if ("serviceWorker" in navigator) navigator.serviceWorker.register("/static/sw.js", {scope: "./"}).then(console.log) </script>
 {% if not non_preload %}
     <script src="/static/patches.js" defer></script>
     <script src="https://unpkg.com/@popperjs/core@2/dist/umd/popper.js" defer></script>

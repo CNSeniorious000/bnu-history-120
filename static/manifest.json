@@ -4,6 +4,7 @@
   "description": "A site to display stories of bnu-related people in the past 120 years",
   "start_url": "/",
   "display": "minimal-ui",
+  "theme_color": "#AF1E24",
   "background_color": "#AF1E24",
   "icons": [
     {

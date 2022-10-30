@@ -43,10 +43,11 @@ window.onpopstate = async () => {
     current = location.href
     if (to.path === from.path) return console.assert(to.hash !== from.hash, [to.hash, from.hash])
     let preload_url = "/preload" + to.path
-    await fetch_page(preload_url).then(json => {
-        article.innerHTML = json["div"]
-        document.title = json["title"]
-    }).then(patch_hash_link).then(() => document.querySelectorAll("button").forEach(add_tooltip_creator))
+    let page_json = await fetch_page(preload_url)
+    article.innerHTML = page_json["div"]
+    document.title = page_json["title"]
+    patch_hash_link()
+    document.querySelectorAll("button").forEach(add_tooltip_creator)
 }
 
 // patch <a> tags

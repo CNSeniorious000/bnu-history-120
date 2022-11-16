@@ -3,6 +3,7 @@ from brotli_asgi import BrotliMiddleware
 from time import perf_counter_ns
 from fastapi.responses import *
 from minify_html import minify
+from bs4 import BeautifulSoup
 from datetime import datetime
 from fastapi import FastAPI
 from rcssmin import cssmin
@@ -40,7 +41,8 @@ async def fine_log(request: Request, call_next):
 
 def minimize(response: Response):
     if "text/html" in response.headers["Content-Type"]:
-        response.body = minify(response.body.decode(), minify_js=True, minify_css=True).encode()
+        fine_html = BeautifulSoup(response.body.decode(), "lxml").prettify()
+        response.body = minify(fine_html, minify_js=True, minify_css=True).encode()
     return response
 
 

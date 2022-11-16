@@ -2,6 +2,7 @@ from urllib.parse import urlparse, unquote
 from brotli_asgi import BrotliMiddleware
 from time import perf_counter_ns
 from fastapi.responses import *
+from minify_html import minify
 from datetime import datetime
 from fastapi import FastAPI
 from rcssmin import cssmin
@@ -34,6 +35,12 @@ async def fine_log(request: Request, call_next):
         f"to {unquote(str(request.url))}"
     )))
 
+    return response
+
+
+def minimize(response: Response):
+    if "text/html" in response.headers["Content-Type"]:
+        response.body = minify(response.body.decode(), minify_js=True, minify_css=True).encode()
     return response
 
 

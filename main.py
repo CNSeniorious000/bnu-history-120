@@ -6,7 +6,7 @@ from fastapi import Header
 from enum import Enum
 from core import *
 
-template = Jinja2Templates("./static", trim_blocks=True, lstrip_blocks=True, keep_trailing_newline=True)
+template = Jinja2Templates("./static")
 TemplateResponse = template.TemplateResponse
 app.mount("/static/", StaticFiles(directory="./static/"))
 
@@ -60,14 +60,14 @@ def get_university_md(request: Request, university: Universities, x_bnu120_usage
 
 @app.get("/about", include_in_schema=False)
 def about_page(request: Request):
-    return TemplateResponse("article_view.html", {
+    return minimize(TemplateResponse("article_view.html", {
         "request": request,
         "non_preload": True,
         "title": "🏗 under construction",
         "name": "readme.md",
         "markdown": markdown_path("./readme.md", extras=extras),
         "universities": University.universities
-    })
+    }))
 
 
 @app.get("/{university}", responses={200: {"content": {"text/html": {}}}})
@@ -75,13 +75,13 @@ def about_page(request: Request):
 def get_university_info(request: Request, university: Universities):
     try:
         html = University(university.value).html
-        return TemplateResponse("article_view.html", {
+        return minimize(TemplateResponse("article_view.html", {
             "request": request,
             "title": university.name,
             "name": university.name,
             "markdown": html,
             "universities": University.universities
-        })
+        }))
 
     except NotADirectoryError:
         return ORJSONResponse(format_exc(chain=False), 404)
@@ -120,13 +120,13 @@ def get_person_info(request: Request, university: Universities, category: Catego
     try:
         person = Person(name, University(university.value), category.value)
         html = person.html
-        return TemplateResponse("article_view.html", {
+        return minimize(TemplateResponse("article_view.html", {
             "request": request,
             "name": name,
             "title": f"{name} - {university.value}{category.value}",
             "markdown": html,
             "universities": University.universities
-        })
+        }))
 
     except (NotADirectoryError, FileNotFoundError):
         return PlainTextResponse(format_exc(chain=False), 404)

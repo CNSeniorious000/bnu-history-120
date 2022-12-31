@@ -60,14 +60,14 @@ def get_university_md(request: Request, university: Universities, x_bnu120_usage
 
 @app.get("/about", include_in_schema=False)
 def about_page(request: Request):
-    return minimize(TemplateResponse("article_view.html", {
+    return TemplateResponse("article_view.html", {
         "request": request,
         "non_preload": True,
         "title": "🏗 under construction",
         "name": "readme.md",
         "markdown": markdown_path("./readme.md", extras=extras),
         "universities": University.universities
-    }))
+    })
 
 
 @app.get("/{university}", responses={200: {"content": {"text/html": {}}}})
@@ -134,5 +134,5 @@ def get_person_info(request: Request, university: Universities, category: Catego
 
 @app.get("/", include_in_schema=False)
 def home_page(request: Request):
-    return RedirectResponse("/about", 302)
-    # return FileResponse("./static/index.html")
+    # return RedirectResponse("/about", 302)
+    return FileResponse("./static/index.html")

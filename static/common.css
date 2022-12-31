@@ -168,10 +168,6 @@ code {
     border-radius: 0.2em;
 }
 
-li code:first-child {
-    margin-left: 0;
-}
-
 :root {
     --primary-color: #AF1E24;
 }

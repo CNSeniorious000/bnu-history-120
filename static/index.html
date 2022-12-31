@@ -3,8 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
-    <script src="/static/parallax.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/parallax/3.1.0/parallax.min.js"></script>
     <style>
+        body {
+            background: var(--bg);
+        }
+
         #scene {
             position: fixed;
             right: 50%;
@@ -12,42 +16,95 @@
             transform: translate(50%, 50%);
         }
 
-        a {
-            text-decoration: none;
-            color: inherit;
-            opacity: 20%;
+        :root {
+            --bg: white;
+            --primary: #AF1E24;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg: #111;
+                --primary: #ff5a6c;
+                color: white;
+            }
+        }
+
+        .full {
+            position: fixed;
+            left: 0;
+            top: 0;
+            overflow: hidden;
+            width: 100%;
+            height: 100vh;
+        }
+
+        #scene span {
+            --o: 0;
+            opacity: var(--o);
+            color: #808080;
             font-size: 1em;
             display: block;
             position: fixed;
             width: max-content;
             font-family: serif;
-            --translateX: 0;
-            --translateY: 0;
+        }
+
+        a {
+            letter-spacing: 0.5pt;
+            transition: all 200ms;
+            display: block;
+            border-radius: 3px;
+            border: solid 2px var(--primary);
+            font-weight: bold;
+            opacity: 30%;
+            padding: 0.5em 0.7em;
+            width: fit-content;
+            text-decoration: none;
+            color: var(--primary);
         }
 
         a:hover {
+            color: var(--bg);
+            background: var(--primary);
             opacity: 1;
+            border: solid 2px var(--primary);
         }
     </style>
 </head>
 <body>
 
-<div id="scene">
+<div id="scene"></div>
+<div style="box-shadow: inset var(--bg) 0 0 50vmin 20vmin" class="full"></div>
+
+<div class="full" style="display: grid; place-items: center">
+    <div style="width: 50%; min-width: 400px; border: 2px solid #80808020; padding: 20px; border-radius: 10px; gap: 15px; display: flex; flex-direction: column; backdrop-filter: blur(15px)">
+        <h1 style="color: var(--primary); margin: 0; letter-spacing: 1px; font-family: monospace, sans-serif">
+            BNU 120 校史百科
+        </h1>
+        <p style="line-height: 1.7em; margin: 0">
+            北京师范大学作为中国最高师范学府，前身为1902年成立的京师大学堂师范馆，距今已有接近120年历史。北京师范大学身处北京地区，经历了清末改革、辛亥革命清帝退位、国民政府北伐初步统一、北平和平解放等重大事件，积极参与了五四运动、一二九运动等学生运动，具有经历的丰富性和思想的先进性，是近代时期中国救亡图存运动的见证者；北京师范大学是全国最高等级的师范院校，从北师大出版社出版的众多中小学教辅和教材，到培养出的各式各样的中小学基础教育教师，以“学为人师，行为世范”为校训的北师大是全国基础教育发展和改革的积极推动者；北京师范大学积极投身国家事业，发起“四有”好老师启航计划、“志远计划”推动中西部贫困地区教育事业发展，是中国扶贫减贫事业重要的教育支柱。北师大近120周年的历史，既是中国近代仁人志士和有识之士救亡图存的历程，也是中国高等教育发展壮大的过程，更是中华民族从危急时刻转危为安，踏上中华民族伟大复兴征程的见证。
+        </p>
+        <div style="display: flex; flex-direction: row; gap: 1em">
+            <a href="/北师大" style="opacity: 1"> 从北师大开始浏览 </a>
+            <a href="/about"> 关于本站 </a>
+        </div>
+    </div>
 </div>
 
 </body>
 <script>
     const scene = document.getElementById("scene")
 
-    function add_person(name, href) {
-        let a = document.createElement("a")
-        a.href = href
-        let depth = Math.random() * 50
-        a.innerHTML = name + depth.toPrecision(1)
+    const depthScale = 100;
 
-        a.setAttribute("data-depth", depth.toString())
-        // a.style.scale = `${depth * 10}%`
-        scene.appendChild(a)
+    function add_person(name, href) {
+        let span = document.createElement("span")
+        span.href = href
+        let depth = Math.random()
+        span.innerHTML = name
+
+        span.setAttribute("data-depth", (depth * depthScale).toString())
+        scene.appendChild(span)
     }
 
     fetch("/api/people/list").then(response => response.json()).then(people => {
@@ -55,10 +112,17 @@
             add_person(name, people[name])
         }
         new Parallax(scene)
-        for (a of scene.children) {
-            let depth = a.getAttribute("data-depth")
-            a.style.left = `${(Math.random() * 600 - 300) * depth / 10}pt`
-            a.style.top = `${(Math.random() * 600 - 300) * depth / 10}pt`
+        for (let span of scene.children) {
+            let depth = span.getAttribute("data-depth") / depthScale
+            let x = Math.random() - 0.5
+            let y = Math.random() - 0.5
+            span.style.left = `${x * 1280}pt`
+            span.style.top = `${y * 720}pt`
+            // let opacity = Math.ceil(1 / (x * x + y * y))
+            // span.style.setProperty("--o", Math.min(opacity, 25) + "%")
+            setTimeout(() => {
+              span.style.setProperty("--o", Math.ceil(Math.random() * 100) + "%")
+            }, Math.max(50, (Math.random() ** 0.5) * 2000))
         }
     })
 

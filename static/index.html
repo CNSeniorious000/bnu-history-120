@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0">
     <title>BNU 120 校史百科</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/parallax/3.1.0/parallax.min.js"></script>
+    <link rel="manifest" href="/static/manifest.json" type="application/manifest+json">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet"
@@ -128,13 +129,15 @@
 
 </body>
 <script>
+
     const scene = document.getElementById("scene")
 
-    const depthScale = 100;
+    const width = window.innerWidth * 0.75
+    const height = window.innerHeight * 0.75
+    const depthScale = 100
 
-    function add_person(name, href) {
+    function create_person_node(name) {
         let span = document.createElement("span")
-        span.href = href
         let depth = Math.random()
         span.innerHTML = name
 
@@ -142,23 +145,23 @@
         scene.appendChild(span)
     }
 
+    function decorate_person_node(span) {
+        let depth = span.getAttribute("data-depth") / depthScale
+        let x = Math.random() - 0.5
+        let y = Math.random() - 0.5
+        span.style.left = `${x * width * (0.9 + depth / 2)}pt`
+        span.style.top = `${y * height * (0.9 + depth / 2)}pt`
+        setTimeout(() => {
+            span.style.setProperty("--o", Math.ceil(Math.random() * 100) + "%")
+            span.style.setProperty("--scale", 1)
+            span.style.setProperty("--blurRadius", 0)
+        }, (Math.random() ** 2) * 2000)
+    }
+
     fetch("/api/people/list").then(response => response.json()).then(people => {
-        for (let name of people) {
-            add_person(name, people[name])
-        }
+        people.forEach(create_person_node)
         new Parallax(scene)
-        for (let span of scene.children) {
-            let depth = span.getAttribute("data-depth") / depthScale
-            let x = Math.random() - 0.5
-            let y = Math.random() - 0.5
-            span.style.left = `${x * 1280}pt`
-            span.style.top = `${y * 720}pt`
-            setTimeout(() => {
-              span.style.setProperty("--o", Math.ceil(Math.random() * 100) + "%")
-              span.style.setProperty("--scale", "1")
-              span.style.setProperty("--blurRadius", "0")
-            }, (Math.random() ** 2) * 2000)
-        }
+        scene.childNodes.forEach(decorate_person_node)
     })
 
 </script>

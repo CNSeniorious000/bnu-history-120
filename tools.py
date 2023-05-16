@@ -1,6 +1,8 @@
 from fastapi import Response, Request
+from person import University
 from functools import wraps
 from hashlib import md5
+import env
 
 
 def get_etag(response: Response):
@@ -27,3 +29,7 @@ def cache_with_etag(handler):
         return response
 
     return inner
+
+
+def make_shared_context(request: Request):
+    return {"env": env, "universities": University.universities}

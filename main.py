@@ -6,7 +6,7 @@ from fastapi import Header
 from enum import Enum
 from core import *
 
-template = Jinja2Templates("./static")
+template = Jinja2Templates("./static", context_processors=[make_shared_context])
 TemplateResponse = template.TemplateResponse
 app.mount("/static/", StaticFiles(directory="./static/"))
 
@@ -66,7 +66,6 @@ def about_page(request: Request):
         "title": "🏗 under construction",
         "name": "readme.md",
         "markdown": markdown_path("./readme.md", extras=extras),
-        "universities": University.universities
     })
 
 
@@ -80,7 +79,6 @@ def get_university_info(request: Request, university: Universities):
             "title": university.name,
             "name": university.name,
             "markdown": html,
-            "universities": University.universities
         }))
 
     except NotADirectoryError:
@@ -125,7 +123,6 @@ def get_person_info(request: Request, university: Universities, category: Catego
             "name": name,
             "title": f"{name} - {university.value}{category.value}",
             "markdown": html,
-            "universities": University.universities
         }))
 
     except (NotADirectoryError, FileNotFoundError):
@@ -134,5 +131,4 @@ def get_person_info(request: Request, university: Universities, category: Catego
 
 @app.get("/", include_in_schema=False)
 def home_page(request: Request):
-    # return RedirectResponse("/about", 302)
-    return FileResponse("./static/index.html")
+    return TemplateResponse("index.html", {"request": request})

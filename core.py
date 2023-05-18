@@ -127,16 +127,3 @@ def get_service_worker(request: Request):
 @app.get("/{filename:path}.js", include_in_schema=False)
 def get_compressed_javascript(request: Request, filename: str):
     return Response(jsmin(open(f"./{filename}.js").read()), media_type="application/javascript")
-
-
-@app.get("/{filename}.svg", include_in_schema=False)
-def get_svg_asset(request: Request, filename: str):
-    try:
-        path = unquote(urlparse(request.headers["referer"]).path, "utf-8").removeprefix("/")
-    except KeyError:
-        return PlainTextResponse("you can't get a svg without a referer header", 400)
-    full_path = f"./data/{path}/{filename}.svg"
-    if isfile(full_path):
-        return Response(open(full_path, encoding="utf-8").read(), media_type="image/svg+xml")
-    else:
-        return PlainTextResponse(f"{full_path} is not a file", 404)

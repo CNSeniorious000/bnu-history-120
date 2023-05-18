@@ -21,7 +21,7 @@ function push_state(url) {
 }
 
 async function load_page(url) {
-    let preload_url = "/preload" + url
+    let preload_url = "/api" + url
     if (!cache.has(preload_url)) await fetch_page(preload_url)
     let json = cache.get(preload_url)
     article.innerHTML = json["div"]
@@ -42,7 +42,7 @@ window.onpopstate = async () => {
     let from = split_hash(current)
     current = location.href
     if (to.path === from.path) return console.assert(to.hash !== from.hash, [to.hash, from.hash])
-    let preload_url = "/preload" + to.path
+    let preload_url = "/api" + to.path
     let page_json = await fetch_page(preload_url)
     article.innerHTML = page_json["div"]
     document.title = page_json["title"]
@@ -60,7 +60,7 @@ function enable_preloading(node) {
         node.onclick = () => history.replaceState(null, null, node.href)
     }
     let url = href.pathname
-    let preload_url = "/preload" + url
+    let preload_url = "/api" + url
     node.onmouseenter = () => fetch_page(preload_url)
     node.onclick = () => {
         load_page(url).then(() => {
@@ -131,7 +131,7 @@ function add_tooltip_creator(button) {
             createPopper(button, links)
             return links
         }).then(links => {
-            for (let url of links) fetch_page("/preload" + new URL(url, current).pathname)  // force url-encode
+            for (let url of links) fetch_page("/api" + new URL(url, current).pathname)  // force url-encode
             tips.childNodes.forEach(enable_preloading)
         })));
 }

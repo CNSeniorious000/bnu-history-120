@@ -21,12 +21,7 @@
 <body>
 <div id="everything">
     <div id="article">
-        <article>
-            <div id="markdown">
-                <h1> {{ name }} </h1>
-                {{ markdown | safe }}
-            </div>
-        </article>
+        {% include "Article.jinja2" %}
     </div>
     <div id="footer">
         <footer>
@@ -65,7 +60,7 @@
     </div>
 </div>
 </body>
-{% if not non_preload %}
+{% if not non_spa %}
     <script src="/static/patches.js" defer></script>
     <script src="https://unpkg.com/@popperjs/core@2/dist/umd/popper.js" defer></script>
     <link rel="stylesheet" href="/static/tooltip.css">

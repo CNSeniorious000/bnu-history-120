@@ -1,20 +1,60 @@
+from starlette.templating import Jinja2Templates
 from urllib.parse import urlparse, unquote
 from brotli_asgi import BrotliMiddleware
+from fastapi import FastAPI, Request
 from time import perf_counter_ns
 from fastapi.responses import *
-from minify_html import minify
-from bs4 import BeautifulSoup
 from datetime import datetime
-from fastapi import FastAPI
 from rcssmin import cssmin
 from loguru import logger
 from rjsmin import jsmin
+from hashlib import md5
+from enum import Enum
 from person import *
-from tools import *
+import env
+
+
+class Universities(Enum):
+    BNU = "北师大"
+    FuJen = "辅大"
+    BFHNC = "女高师"
+
+    @property
+    def name(self):
+        return University(self.value).full_name
+
+
+class Categories(Enum):
+    president = "校长"
+    graduate = "校友"
+    teacher = "教师"
+    founder = "创始人"
+
+
+def make_shared_context(request: Request):
+    return {"env": env, "universities": University.universities}
+
 
 app = FastAPI(title="BNU 120 years 🎉", description=open("readme.md", encoding="utf-8").read(), version="dev",
               contact={"name": "Muspi Merol", "url": "https://muspimerol.site/", "email": "admin@muspimerol.site"},
               default_response_class=ORJSONResponse)
+
+
+@app.middleware("http")
+async def negotiated_cache(request: Request, call_next):
+    etag = request.headers.get("If-None-Match")
+    response: StreamingResponse = await call_next(request)
+    if response.status_code // 100 != 2:
+        return response
+
+    body = b"".join([part async for part in response.body_iterator])
+
+    if (new_etag := f'W/"{md5(body).hexdigest()}"') == etag:
+        return Response(None, 304)
+
+    return Response(body, response.status_code, {"Etag": new_etag, **response.headers}, response.media_type)
+
+
 app.add_middleware(BrotliMiddleware, quality=11)
 
 
@@ -39,11 +79,8 @@ async def fine_log(request: Request, call_next):
     return response
 
 
-def minimize(response: Response):
-    if "text/html" in response.headers["Content-Type"]:
-        fine_html = BeautifulSoup(response.body.decode(), "lxml").prettify()
-        response.body = minify(fine_html, minify_js=True, minify_css=True).encode()
-    return response
+template = Jinja2Templates("./templates", context_processors=[make_shared_context])
+TemplateResponse = template.TemplateResponse
 
 
 @app.get("/favicon.ico", include_in_schema=False)
@@ -51,14 +88,13 @@ def get_favicon_ico(request: Request):
     return RedirectResponse("/static/icon/favicon.ico")
 
 
-@app.get("/robots.txt", responses={200: {"content": {"text/plain": {}}}})
+@app.get("/robots.txt", include_in_schema=False)
 def on_scraper(request: Request):
-    print(request.headers)
+    print(request.headers.get("user-agent"))
     return PlainTextResponse("User-agent: *\nAllow: /")
 
 
 @app.get("/{filename}.css", include_in_schema=False)
-@cache_with_etag
 def render_css(request: Request, filename: str):
     main_css_path = f"./static/{filename}.css"
     if isfile(main_css_path):
@@ -89,13 +125,11 @@ def get_service_worker(request: Request):
 
 
 @app.get("/{filename:path}.js", include_in_schema=False)
-@cache_with_etag
 def get_compressed_javascript(request: Request, filename: str):
     return Response(jsmin(open(f"./{filename}.js").read()), media_type="application/javascript")
 
 
 @app.get("/{filename}.svg", include_in_schema=False)
-@cache_with_etag
 def get_svg_asset(request: Request, filename: str):
     try:
         path = unquote(urlparse(request.headers["referer"]).path, "utf-8").removeprefix("/")

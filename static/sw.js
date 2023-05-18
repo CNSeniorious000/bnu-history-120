@@ -3,7 +3,7 @@ self.addEventListener("install", (ev) => {
         caches.open("bnu120").then((cache) => {
             cache.addAll([
                 "/common.css",
-                "/patches.js",
+                "/static/patches.js",
                 "/tooltip.css",
                 "https://unpkg.com/@popperjs/core@2/dist/umd/popper.js",
                 "https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@200;300;400;500;600;700;900&display=swap",

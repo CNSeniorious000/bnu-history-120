@@ -1,0 +1,21 @@
+[tool.poetry]
+name = "bnu-history-120"
+version = "0.1.0"
+description = ""
+authors = ["Muspi Merol <admin@muspimerol.site>"]
+license = "MIT"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.8"
+fastapi = { extras = ["all"], version = "^0.103.2" }
+markdown2 = "^2.4.10"
+rjsmin = "^1.2.1"
+rcssmin = "^1.1.1"
+loguru = "^0.7.2"
+brotli-asgi = "^1.4.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

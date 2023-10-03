@@ -1,0 +1,4 @@
+"""static site generation"""
+
+
+# placeholder

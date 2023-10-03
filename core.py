@@ -1,10 +1,10 @@
 from datetime import datetime
 from enum import Enum
 from hashlib import md5
+from os import environ
 from time import perf_counter_ns
 from urllib.parse import unquote
 
-import env
 from brotli_asgi import BrotliMiddleware
 from fastapi import FastAPI, Request
 from fastapi.responses import *
@@ -34,7 +34,7 @@ class Categories(Enum):
 
 
 def make_shared_context(request: Request):
-    return {"env": env, "universities": University.universities}
+    return {"env": environ, "universities": University.universities}
 
 
 app = FastAPI(

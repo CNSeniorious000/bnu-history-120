@@ -1,2 +1,5 @@
 .idea
-env.py
+.vscode
+__pycache__
+poetry.lock
+.netlify

@@ -1,6 +1,7 @@
-from functools import cache, cached_property
+from functools import cached_property, lru_cache
 from os import walk
 from os.path import isdir, isfile
+from typing import List
 
 from markdown2 import markdown, markdown_path
 
@@ -20,7 +21,7 @@ class University:
 
         return object.__new__(cls)
 
-    def __init__(self, name, categories: list[str] = (), full_name=""):
+    def __init__(self, name, categories: List[str] = (), full_name=""):
         self.name = name
         if self in self.universities:
             return
@@ -29,11 +30,11 @@ class University:
         self.path = f"./data/{name}"
         self.universities.append(self)
 
-    @cache
+    @lru_cache(None)
     def filter_category(self, category: str):
         assert category in self.categories
         return [
-            Person(path.removesuffix(".md"), self, category)
+            Person(path.rstrip(".md"), self, category)
             for path in next(walk(f"{self.path}/{category}"))[2]
         ]
 
@@ -55,12 +56,12 @@ class University:
         return isinstance(university, University) and university.name == self.name
 
     @classmethod
-    def get_all_people(cls) -> list["Person"]:
+    def get_all_people(cls) -> List["Person"]:
         return sum([university.people for university in cls.universities], [])
 
 
 class Person:
-    @cache
+    @lru_cache(None)
     def __new__(cls, name, university, category):
         if not isdir(directory := f"{university.path}/{category}"):
             raise NotADirectoryError(f"{category} is not a valid category name")

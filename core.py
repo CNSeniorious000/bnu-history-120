@@ -149,7 +149,7 @@ def render_css(request: Request, filename: str):
 
 @app.get("/sw.js", include_in_schema=False)
 def get_service_worker(request: Request):
-    return get_compressed_javascript(request, "static/sw.js".removesuffix(".js"))
+    return get_compressed_javascript(request, "static/sw.js".rstrip(".js"))
 
 
 @app.get("/{filename:path}.js", include_in_schema=False)

@@ -9,13 +9,13 @@ router = APIRouter(prefix="/api", tags=["API"])
 
 
 @router.get("/people/list")
-@cache
+@lru_cache(None)
 def get_name_set():
     return ORJSONResponse(list({person.name for person in University.get_all_people()}))
 
 
 @router.get("/people/dict")
-@cache
+@lru_cache(None)
 def get_people_map():
     name_map = {}
     for person in University.get_all_people():

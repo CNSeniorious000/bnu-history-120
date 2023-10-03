@@ -23,6 +23,7 @@ class University:
             if path.is_dir():
                 self.categories.append(path.name)
 
+    @lru_cache(maxsize=None)
     def filter_category(self, category: str):
         return [Person(path.stem, self, category) for path in (self.path / category).glob("*.md")]
 

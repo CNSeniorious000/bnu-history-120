@@ -1,3 +1,18 @@
 [build]
 publish = "static"
 command = "pip install poetry && poetry install && poetry run python ssg.py"
+
+[[redirects]]
+from = "/api/*"
+to = "/api/:splat.json"
+status = 200
+
+[[redirects]]
+from = "/static/*"
+to = "/:splat"
+status = 200
+
+[[redirects]]
+from = "/favicon.ico"
+to = "/icon/favicon.ico"
+status = 200

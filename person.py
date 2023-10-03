@@ -1,82 +1,55 @@
-from functools import cached_property, lru_cache
-from os import walk
-from os.path import isdir, isfile
-from typing import List
+from functools import lru_cache
+from pathlib import Path
+from typing import List, Literal
 
 from markdown2 import markdown, markdown_path
 
-extras = ["header-ids"]
+markdown_extensions = ["header-ids"]
+
+Universities = Literal["北师大", "辅大", "女高师"]
+Categories = Literal["校长", "校友", "教师", "创始人"]
 
 
 class University:
-    universities = []
-
-    def __new__(cls, name, *args, **kwargs):
-        if not isdir(f"./data/{name}"):
+    def __init__(self, name: str, full_name: str):
+        self.name = name
+        self.full_name = full_name
+        self.path = Path(f"./data/{name}")
+        if not self.path.is_dir():
             raise NotADirectoryError(f"{name} is not a valid university name")
 
-        for university in cls.universities:
-            if university.name == name:
-                return university
+        self.categories: List[str] = []
+        for path in self.path.iterdir():
+            if path.is_dir():
+                self.categories.append(path.name)
 
-        return object.__new__(cls)
-
-    def __init__(self, name, categories: List[str] = (), full_name=""):
-        self.name = name
-        if self in self.universities:
-            return
-        self.full_name = full_name
-        self.categories = categories
-        self.path = f"./data/{name}"
-        self.universities.append(self)
-
-    @lru_cache(None)
     def filter_category(self, category: str):
-        assert category in self.categories
-        return [
-            Person(path.rstrip(".md"), self, category)
-            for path in next(walk(f"{self.path}/{category}"))[2]
-        ]
+        return [Person(path.stem, self, category) for path in (self.path / category).glob("*.md")]
 
-    @cached_property
+    @property
     def people(self):
-        return sum((self.filter_category(category) for category in self.categories), [])
+        return sum(map(self.filter_category, self.categories), [])
 
-    @cached_property
+    @property
     def html(self):
-        return mark_people(markdown_path(f"{self.path}/index.md", extras=extras))
+        return add_links(markdown_path(str(self.path / "index.md"), extras=markdown_extensions))
 
     def __repr__(self):
         return self.name
 
-    def __hash__(self):
-        return hash(self.name)
-
-    def __eq__(self, university):
-        return isinstance(university, University) and university.name == self.name
-
-    @classmethod
-    def get_all_people(cls) -> List["Person"]:
-        return sum([university.people for university in cls.universities], [])
-
 
 class Person:
-    @lru_cache(None)
-    def __new__(cls, name, university, category):
-        if not isdir(directory := f"{university.path}/{category}"):
-            raise NotADirectoryError(f"{category} is not a valid category name")
-        if not isfile(f"{directory}/{name}.md"):
-            raise FileNotFoundError(f"{name} is not a valid person name")
-        return object.__new__(cls)
-
-    def __init__(self, name, university: University, category):
+    def __init__(self, name: str, university: University, category: str):
         self.name = name
         self.university = university
         self.category = category
-        self.path = f"{university.path}/{category}/{name}.md"
+        self.path = university.path / category / f"{name}.md"
+        self.url = f"/{university}/{category}/{name}"
 
-        with open(self.path, encoding="utf-8") as f:
-            text = f.read()
+        if not self.path.is_file():
+            raise FileNotFoundError(f"{name} is not a valid person name")
+
+        text = self.path.read_text("utf-8")
 
         if text.startswith("![]("):
             self.portrait = text[text.index("(") + 1 : text.index(")")]
@@ -85,29 +58,37 @@ class Person:
             self.portrait = None
             self.content = text
 
-    @cached_property
+    @property
     def html(self):
-        return markdown(mark_people(self.content), extras=extras)
+        return add_links(markdown(self.content, extras=markdown_extensions))
 
     def __repr__(self):
         return self.name
 
-    def __hash__(self):
-        return hash(self.path)
 
-    def __eq__(self, person):
-        return isinstance(person, Person) and person.path == self.path
-
-
-University("北师大", ["教师", "校友", "校长"], "北京师范大学")
-University("女高师", ["教师", "校友", "校长"], "北京女子高等师范学校")
-University("辅大", ["教师", "校友", "校长", "创始人"], "辅仁大学")
-
-all_people = University.get_all_people()
+@lru_cache(maxsize=None)
+def render_university_html(name: str, /):
+    return universities[name].html
 
 
-def mark_people(text: str):
-    for person in all_people:
+@lru_cache(maxsize=None)
+def render_person_html(name: str, university_name: str, category: str, /):
+    return Person(name, universities[university_name], category).html
+
+
+universities = {
+    "北师大": University("北师大", "北京师范大学"),
+    "女高师": University("女高师", "北京女子高等师范学校"),
+    "辅大": University("辅大", "辅仁大学"),
+}
+
+people: List[Person] = [
+    person for university in universities.values() for person in university.people
+]
+
+
+def add_links(text: str):
+    for person in people:
         if (name := person.name) in text and (
             button := f'<button type="button">{name}</button>'
         ) not in text:

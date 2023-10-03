@@ -15,6 +15,11 @@ rcssmin = "^1.1.1"
 loguru = "^0.7.2"
 brotli-asgi = "^1.4.0"
 
+[tool.black]
+line-length = 100
+
+[tool.isort]
+line_length = 1000
 
 [build-system]
 requires = ["poetry-core"]

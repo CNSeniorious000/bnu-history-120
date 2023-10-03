@@ -1,4 +1,4 @@
-from glob import glob
+from pathlib import Path
 
 
 def normalize(string: str):
@@ -23,9 +23,8 @@ def normalize(string: str):
 
 
 if __name__ == "__main__":
-    documents = glob("**/*.md", recursive=True)
-    for document in documents:
-        with open(document, "r+", encoding="utf-8") as md:
+    for document in Path().glob("*/**/*.md"):
+        with document.open("r+", encoding="utf-8") as md:
             text = md.read()
             md.seek(0)
             md.write(normalize(text))

@@ -1,40 +1,25 @@
 from datetime import datetime
-from enum import Enum
 from hashlib import md5
 from os import environ
+from pathlib import Path
 from time import perf_counter_ns
 from urllib.parse import unquote
 
 from brotli_asgi import BrotliMiddleware
-from fastapi import FastAPI, Request
-from fastapi.responses import *
+from fastapi import FastAPI, Request, Response
+from fastapi.responses import ORJSONResponse, PlainTextResponse, RedirectResponse, StreamingResponse
 from loguru import logger
 from rcssmin import cssmin
 from rjsmin import jsmin
 from starlette.templating import Jinja2Templates
 
-from person import *
+from person import universities
+
+STATIC = Path("./static/")
 
 
-class Universities(Enum):
-    BNU = "北师大"
-    FuJen = "辅大"
-    BFHNC = "女高师"
-
-    @property
-    def name(self):
-        return University(self.value).full_name
-
-
-class Categories(Enum):
-    president = "校长"
-    graduate = "校友"
-    teacher = "教师"
-    founder = "创始人"
-
-
-def make_shared_context(request: Request):
-    return {"env": environ, "universities": University.universities}
+def make_shared_context(_):
+    return {"env": environ, "universities": universities.values()}
 
 
 app = FastAPI(
@@ -100,7 +85,7 @@ TemplateResponse = template.TemplateResponse
 
 
 @app.get("/favicon.ico", include_in_schema=False)
-def get_favicon_ico(request: Request):
+def get_favicon_ico():
     return RedirectResponse("/static/icon/favicon.ico")
 
 
@@ -111,49 +96,43 @@ def on_scraper(request: Request):
 
 
 @app.get("/{filename}.css", include_in_schema=False)
-def render_css(request: Request, filename: str):
-    main_css_path = f"./static/{filename}.css"
-    if isfile(main_css_path):
-        if isfile(light_css_path := f"./static/{filename}-light.css") and isfile(
-            dark_css_path := f"./static/{filename}-dark.css"
-        ):
-            """生成聚合css"""
-        else:
-            return Response(open(main_css_path).read(), media_type="text/css")
-    else:
-        return PlainTextResponse(f"{main_css_path} is not a file", 404)
+def render_css(filename: str):
+    css = STATIC / f"{filename}.css"
+    if not css.is_file():
+        return PlainTextResponse(f"{css} is not a file", 404)
 
-    # generate mixed style sheet
+    css_light = STATIC / f"{filename}-light.css"
+    css_dark = STATIC / f"{filename}-dark.css"
 
-    main = open(main_css_path).read()
-    light = open(light_css_path).read()
-    dark = open(dark_css_path).read()
-
-    return Response(
-        cssmin(
-            "\n".join(
-                (
-                    main,
-                    "@media (prefers-color-scheme: light) {",
-                    light,
-                    "}",
-                    "@media (prefers-color-scheme: dark) {",
-                    dark,
-                    "}",
+    if css_light.is_file() and css_dark.is_file():
+        # generate mixed style sheet
+        return Response(
+            cssmin(
+                "\n".join(
+                    (
+                        css.read_text("utf-8"),
+                        "@media (prefers-color-scheme: light) {",
+                        css_light.read_text("utf-8"),
+                        "}",
+                        "@media (prefers-color-scheme: dark) {",
+                        css_dark.read_text("utf-8"),
+                        "}",
+                    )
                 )
-            )
-        ),
-        media_type="text/css",
-    )
+            ),
+            media_type="text/css",
+        )
+
+    return Response(cssmin(css.read_text("utf-8")), media_type="text/css")
 
 
 @app.get("/sw.js", include_in_schema=False)
-def get_service_worker(request: Request):
-    return get_compressed_javascript(request, "static/sw.js".rstrip(".js"))
+def get_service_worker():
+    return get_compressed_javascript("static/sw")
 
 
 @app.get("/{filename:path}.js", include_in_schema=False)
-def get_compressed_javascript(request: Request, filename: str):
+def get_compressed_javascript(filename: str):
     return Response(
-        jsmin(open(f"./{filename}.js").read()), media_type="application/javascript"
+        jsmin(Path(f"./{filename}.js").read_text("utf-8")), media_type="application/javascript"
     )

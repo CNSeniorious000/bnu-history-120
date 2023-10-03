@@ -1,6 +1,8 @@
-from traceback import format_exc
 from contextlib import suppress
+from traceback import format_exc
+
 from fastapi import APIRouter
+
 from core import *
 
 router = APIRouter(prefix="/api", tags=["API"])
@@ -20,7 +22,9 @@ def get_people_map():
         if path_list := name_map.get(person.name):
             path_list.append(f"/{person.university}/{person.category}/{person.name}")
         else:
-            name_map[person.name] = [f"/{person.university}/{person.category}/{person.name}"]
+            name_map[person.name] = [
+                f"/{person.university}/{person.category}/{person.name}"
+            ]
 
     return ORJSONResponse(name_map)
 
@@ -29,10 +33,14 @@ def get_people_map():
 def get_university_md(university: Universities):
     with suppress(NotADirectoryError):
         html = University(university.value).html
-        return ORJSONResponse({
-            "div": template.get_template("Article.jinja2").render({"name": university.name, "markdown": html}),
-            "title": university.name
-        })
+        return ORJSONResponse(
+            {
+                "div": template.get_template("Article.jinja2").render(
+                    {"name": university.name, "markdown": html}
+                ),
+                "title": university.name,
+            }
+        )
 
     return ORJSONResponse(format_exc(chain=False), 404)
 
@@ -42,9 +50,13 @@ def get_person_md(university: Universities, category: Categories, name: str):
     with suppress(NotADirectoryError, FileNotFoundError):
         person = Person(name, University(university.value), category.value)
         html = person.html
-        return ORJSONResponse({
-            "div": template.get_template("Article.jinja2").render({"name": name, "markdown": html}),
-            "title": f"{name} - {university.value}{category.value}"
-        })
+        return ORJSONResponse(
+            {
+                "div": template.get_template("Article.jinja2").render(
+                    {"name": name, "markdown": html}
+                ),
+                "title": f"{name} - {university.value}{category.value}",
+            }
+        )
 
     return PlainTextResponse(format_exc(chain=False), 404)

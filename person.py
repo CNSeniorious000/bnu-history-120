@@ -1,7 +1,8 @@
-from markdown2 import markdown_path, markdown
-from functools import cached_property, cache
-from os.path import isdir, isfile
+from functools import cache, cached_property
 from os import walk
+from os.path import isdir, isfile
+
+from markdown2 import markdown, markdown_path
 
 extras = ["header-ids"]
 
@@ -38,10 +39,7 @@ class University:
 
     @cached_property
     def people(self):
-        return sum((
-            self.filter_category(category)
-            for category in self.categories
-        ), [])
+        return sum((self.filter_category(category) for category in self.categories), [])
 
     @cached_property
     def html(self):
@@ -80,8 +78,8 @@ class Person:
             text = f.read()
 
         if text.startswith("![]("):
-            self.portrait = text[text.index("(") + 1:text.index(")")]
-            self.content = text[text.index("\n") + 1:]
+            self.portrait = text[text.index("(") + 1 : text.index(")")]
+            self.content = text[text.index("\n") + 1 :]
         else:
             self.portrait = None
             self.content = text
@@ -109,6 +107,8 @@ all_people = University.get_all_people()
 
 def mark_people(text: str):
     for person in all_people:
-        if (name := person.name) in text and (button := f'<button type="button">{name}</button>') not in text:
+        if (name := person.name) in text and (
+            button := f'<button type="button">{name}</button>'
+        ) not in text:
             text = text.replace(name, button)
     return text

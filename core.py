@@ -1,17 +1,19 @@
-from starlette.templating import Jinja2Templates
-from urllib.parse import urlparse, unquote
+from datetime import datetime
+from enum import Enum
+from hashlib import md5
+from time import perf_counter_ns
+from urllib.parse import unquote
+
+import env
 from brotli_asgi import BrotliMiddleware
 from fastapi import FastAPI, Request
-from time import perf_counter_ns
 from fastapi.responses import *
-from datetime import datetime
-from rcssmin import cssmin
 from loguru import logger
+from rcssmin import cssmin
 from rjsmin import jsmin
-from hashlib import md5
-from enum import Enum
+from starlette.templating import Jinja2Templates
+
 from person import *
-import env
 
 
 class Universities(Enum):
@@ -35,9 +37,17 @@ def make_shared_context(request: Request):
     return {"env": env, "universities": University.universities}
 
 
-app = FastAPI(title="BNU 120 years 🎉", description=open("readme.md", encoding="utf-8").read(), version="dev",
-              contact={"name": "Muspi Merol", "url": "https://muspimerol.site/", "email": "admin@muspimerol.site"},
-              default_response_class=ORJSONResponse)
+app = FastAPI(
+    title="BNU 120 years 🎉",
+    description=open("readme.md", encoding="utf-8").read(),
+    version="dev",
+    contact={
+        "name": "Muspi Merol",
+        "url": "https://muspimerol.site/",
+        "email": "admin@muspimerol.site",
+    },
+    default_response_class=ORJSONResponse,
+)
 
 
 @app.middleware("http")
@@ -52,7 +62,12 @@ async def negotiated_cache(request: Request, call_next):
     if (new_etag := f'W/"{md5(body).hexdigest()}"') == etag:
         return Response(None, 304)
 
-    return Response(body, response.status_code, {"Etag": new_etag, **response.headers}, response.media_type)
+    return Response(
+        body,
+        response.status_code,
+        {"Etag": new_etag, **response.headers},
+        response.media_type,
+    )
 
 
 app.add_middleware(BrotliMiddleware, quality=11)
@@ -63,18 +78,19 @@ async def fine_log(request: Request, call_next):
     now = datetime.now()
     t = perf_counter_ns()
     response: Response = await call_next(request)
-    log = {
-        2: logger.debug,
-        3: logger.success,
-        4: logger.error,
-        5: logger.critical
-    }[response.status_code // 100]
-    log(" ".join((
-        f"[{response.status_code}]",
-        f"{now.month}月{now.day}日 {now.hour}:{now.minute}:{now.second}",
-        f"in {(perf_counter_ns() - t) // 1_000_000}ms",
-        f"to {unquote(str(request.url))}"
-    )))
+    log = {2: logger.debug, 3: logger.success, 4: logger.error, 5: logger.critical}[
+        response.status_code // 100
+    ]
+    log(
+        " ".join(
+            (
+                f"[{response.status_code}]",
+                f"{now.month}月{now.day}日 {now.hour}:{now.minute}:{now.second}",
+                f"in {(perf_counter_ns() - t) // 1_000_000}ms",
+                f"to {unquote(str(request.url))}",
+            )
+        )
+    )
 
     return response
 
@@ -98,8 +114,9 @@ def on_scraper(request: Request):
 def render_css(request: Request, filename: str):
     main_css_path = f"./static/{filename}.css"
     if isfile(main_css_path):
-        if isfile(light_css_path := f"./static/{filename}-light.css") \
-                and isfile(dark_css_path := f"./static/{filename}-dark.css"):
+        if isfile(light_css_path := f"./static/{filename}-light.css") and isfile(
+            dark_css_path := f"./static/{filename}-dark.css"
+        ):
             """生成聚合css"""
         else:
             return Response(open(main_css_path).read(), media_type="text/css")
@@ -112,11 +129,22 @@ def render_css(request: Request, filename: str):
     light = open(light_css_path).read()
     dark = open(dark_css_path).read()
 
-    return Response(cssmin("\n".join((
-        main,
-        "@media (prefers-color-scheme: light) {", light, "}",
-        "@media (prefers-color-scheme: dark) {", dark, "}"
-    ))), media_type="text/css")
+    return Response(
+        cssmin(
+            "\n".join(
+                (
+                    main,
+                    "@media (prefers-color-scheme: light) {",
+                    light,
+                    "}",
+                    "@media (prefers-color-scheme: dark) {",
+                    dark,
+                    "}",
+                )
+            )
+        ),
+        media_type="text/css",
+    )
 
 
 @app.get("/sw.js", include_in_schema=False)
@@ -126,4 +154,6 @@ def get_service_worker(request: Request):
 
 @app.get("/{filename:path}.js", include_in_schema=False)
 def get_compressed_javascript(request: Request, filename: str):
-    return Response(jsmin(open(f"./{filename}.js").read()), media_type="application/javascript")
+    return Response(
+        jsmin(open(f"./{filename}.js").read()), media_type="application/javascript"
+    )

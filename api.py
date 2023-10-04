@@ -9,7 +9,7 @@ from fastapi.responses import ORJSONResponse, PlainTextResponse
 from pydantic import AnyHttpUrl
 
 from core import template
-from person import Categories, Universities, people, render_person_html, render_university_html, universities
+from person import Categories, Universities, name_count_map, people, render_person_html, render_university_html, universities
 
 router = APIRouter(prefix="/api", tags=["API"])
 
@@ -17,7 +17,7 @@ router = APIRouter(prefix="/api", tags=["API"])
 @router.get("/people/list", response_model=List[str])
 @lru_cache(None)
 def get_name_set():
-    return ORJSONResponse(list({person.name for person in people}))
+    return ORJSONResponse(list(name_count_map))
 
 
 @router.get("/people/dict", response_model=Dict[str, AnyHttpUrl])

@@ -155,6 +155,7 @@ function createPopper(button, links) {
         let a = document.createElement("A")
         a.href = url
         a.innerText = url
+        if (current.includes(encodeURI(url))) a.classList.add("current")
         tips.appendChild(a)
     }
 

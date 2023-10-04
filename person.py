@@ -1,3 +1,4 @@
+from collections import Counter
 from functools import lru_cache
 from pathlib import Path
 from typing import List, Literal
@@ -61,7 +62,7 @@ class Person:
 
     @property
     def html(self):
-        return add_links(markdown(self.content, extras=markdown_extensions))
+        return add_links(markdown(self.content, extras=markdown_extensions), self.name)
 
     def __repr__(self):
         return self.name
@@ -87,11 +88,11 @@ people: List[Person] = [
     person for university in universities.values() for person in university.people
 ]
 
+name_count_map = Counter((person.name for person in people))
 
-def add_links(text: str):
-    for person in people:
-        if (name := person.name) in text and (
-            button := f'<button type="button">{name}</button>'
-        ) not in text:
-            text = text.replace(name, button)
+
+def add_links(text: str, exclude_name: str = None):
+    for name, count in name_count_map.items():
+        if (count > 1 or name != exclude_name) and name in text:
+            text = text.replace(name, f'<button type="button">{name}</button>')
     return text

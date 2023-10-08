@@ -34,7 +34,7 @@ class University:
 
     @property
     def html(self):
-        return add_links(markdown_path(str(self.path / "index.md"), extras=markdown_extensions))
+        return add_links(markdown_path(self.path / "index.md", extras=markdown_extensions))
 
     def __repr__(self):
         return self.name

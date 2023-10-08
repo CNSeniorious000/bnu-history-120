@@ -47,11 +47,11 @@ def find_entries():
 
     for path in root.glob("**/*.md"):
         if path.stem == "index":  # university page
-            slug = str(path.relative_to(root).parent)
+            slug = path.relative_to(root).parent.as_posix()
             entries.append(page_entry(slug))
             entries.append(api_entry(f"api/{slug}"))
         else:
-            slug = str(path.relative_to(root).with_suffix(""))
+            slug = path.relative_to(root).with_suffix("").as_posix()
             entries.append(page_entry(slug))
             entries.append(api_entry(f"api/{slug}"))
 

@@ -2,4 +2,7 @@
 .vscode
 __pycache__
 poetry.lock
+pnpm-lock.yaml
+node_modules
 .netlify
+static/uno.css

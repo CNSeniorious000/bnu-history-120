@@ -1,0 +1,13 @@
+{
+  "scripts": {
+    "ssg": "pip install poetry && poetry install && poetry run python ssg.py",
+    "build": "unocss --minify",
+    "dev": "unocss --watch"
+  },
+  "devDependencies": {
+    "@iconify/json": "latest",
+    "@unocss/cli": "latest",
+    "@unocss/preset-icons": "latest",
+    "@unocss/preset-uno": "latest"
+  }
+}

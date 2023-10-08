@@ -1,6 +1,6 @@
 [build]
 publish = "static"
-command = "pip install poetry && poetry install && poetry run python ssg.py"
+command = "pnpm build & pnpm ssg"
 
 [[redirects]]
 from = "/api/*"

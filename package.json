@@ -6,8 +6,10 @@
   },
   "devDependencies": {
     "@iconify/json": "latest",
-    "@unocss/cli": "latest",
-    "@unocss/preset-icons": "latest",
-    "@unocss/preset-uno": "latest"
+    "@netlify/edge-functions": "~2.2",
+    "@unocss/cli": "~0.56",
+    "@unocss/preset-icons": "~0.56",
+    "@unocss/preset-uno": "~0.56",
+    "openai": "~4.11"
   }
 }

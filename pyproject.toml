@@ -15,6 +15,9 @@ rcssmin = "^1.1.1"
 loguru = "^0.7.2"
 brotli-asgi = "^1.4.0"
 
+[tool.poetry.group.dev.dependencies]
+promplate = { extras = ["openai"], version = "^0.2.2.7", python = "^3.10" }
+
 [tool.black]
 line-length = 100
 

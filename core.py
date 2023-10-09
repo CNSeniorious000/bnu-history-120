@@ -37,6 +37,8 @@ app = FastAPI(
 
 @app.middleware("http")
 async def negotiated_cache(request: Request, call_next):
+    if request.method not in {"GET", "HEAD"}:
+        return await call_next(request)
     etag = request.headers.get("If-None-Match")
     response: StreamingResponse = await call_next(request)
     if response.status_code // 100 != 2:

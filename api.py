@@ -3,11 +3,12 @@ from contextlib import suppress
 from functools import lru_cache
 from sys import version_info
 from traceback import format_exc
-from typing import Dict, List, Literal
+from typing import Dict, List, Literal, Optional
 
 from fastapi import APIRouter, Header
 from fastapi.responses import ORJSONResponse, PlainTextResponse, StreamingResponse
 from pydantic import AnyHttpUrl, BaseModel, Field
+from typing_extensions import NotRequired, TypedDict
 
 from core import template
 from person import Categories, Universities, name_count_map, people, render_person_html, render_university_html, universities
@@ -68,7 +69,7 @@ if version_info >= (3, 10):
     from os import getenv
 
     from dotenv import load_dotenv
-    from promplate.llm.openai import AsyncChatGenerate, Message, openai
+    from promplate.llm.openai import AsyncChatGenerate, openai
 
     load_dotenv()
 
@@ -79,19 +80,29 @@ if version_info >= (3, 10):
 
     if env_api_base := getenv("OPENAI_API_BASE"):
         openai.api_base = env_api_base
+else:
+    agenerate = lambda *_, **__: iter("This is a stub. Real functionality requires Python 3.10+")
 
-    class CreateChatCompletion(BaseModel):
-        messages: list[Message] = Field(exclude=True)
-        temperature: float | None = Field(None, examples=[None], ge=0, le=1)
-        top_p: float | None = Field(None, examples=[None], ge=0, le=1)
-        frequency_penalty: float | None = Field(None, examples=[None], ge=-2, le=2)
-        presence_penalty: float | None = Field(None, examples=[None], ge=-2, le=2)
 
-    @router.post("/chat")
-    async def chat_complete(
-        data: CreateChatCompletion, api_key: str = Header("", alias="Authorization")
-    ) -> str:
-        return StreamingResponse(
-            agenerate(data.messages, **data.model_dump(exclude_defaults=True), api_key=api_key),
-            media_type="text/plain",
-        )
+class Message(TypedDict):
+    role: Literal["user", "assistant", "system"]
+    content: str
+    name: NotRequired[str]
+
+
+class CreateChatCompletion(BaseModel):
+    messages: List[Message] = Field(exclude=True)
+    temperature: Optional[float] = Field(None, examples=[None], ge=0, le=1)
+    top_p: Optional[float] = Field(None, examples=[None], ge=0, le=1)
+    frequency_penalty: Optional[float] = Field(None, examples=[None], ge=-2, le=2)
+    presence_penalty: Optional[float] = Field(None, examples=[None], ge=-2, le=2)
+
+
+@router.post("/chat")
+async def chat_complete(
+    data: CreateChatCompletion, api_key: str = Header("", alias="Authorization")
+) -> str:
+    return StreamingResponse(
+        agenerate(data.messages, **data.model_dump(exclude_defaults=True), api_key=api_key),
+        media_type="text/plain",
+    )

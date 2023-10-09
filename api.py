@@ -22,7 +22,7 @@ def get_name_set():
     return ORJSONResponse(list(name_count_map))
 
 
-@router.get("/people/dict", response_model=Dict[str, AnyHttpUrl])
+@router.get("/people/dict", response_model=Dict[str, List[AnyHttpUrl]])
 @lru_cache(None)
 def get_people_map():
     name_map = defaultdict(list)

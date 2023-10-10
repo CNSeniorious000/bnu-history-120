@@ -7,7 +7,7 @@ from typing import Dict, List, Literal, Optional
 
 from fastapi import APIRouter, Header
 from fastapi.responses import ORJSONResponse, PlainTextResponse, StreamingResponse
-from pydantic import AnyHttpUrl, BaseModel, Field
+from pydantic import BaseModel, Field
 from typing_extensions import NotRequired, TypedDict
 
 from core import template
@@ -23,47 +23,42 @@ def get_name_set():
     return ORJSONResponse(list(name_count_map))
 
 
-@router.get("/people/dict", response_model=Dict[str, List[AnyHttpUrl]])
+@router.get("/people/dict", response_class=ORJSONResponse)
 @lru_cache(None)
-def get_people_map():
+def get_people_map() -> Dict[str, List[str]]:
     name_map = defaultdict(list)
     for person in people:
         name_map[person.name].append(person.url)
 
-    return ORJSONResponse(name_map)
+    return name_map
 
 
 @router.get("/{university}", response_model=PartialPage)
 def get_university_md(university: Universities):
-    with suppress(NotADirectoryError):
-        html = render_university_html(university)
-        university_full_name = universities[university].full_name
-        return ORJSONResponse(
-            {
-                "div": template.get_template("Article.jinja2").render(
-                    {"name": university_full_name, "markdown": html}
-                ),
-                "title": university_full_name,
-            }
-        )
-
-    return PlainTextResponse(format_exc(chain=False), 404)
+    html = render_university_html(university)
+    university_full_name = universities[university].full_name
+    return ORJSONResponse(
+        {
+            "div": template.get_template("Article.jinja2").render(
+                {"name": university_full_name, "markdown": html}
+            ),
+            "title": university_full_name,
+        }
+    )
 
 
 @router.get("/{university}/{category}/{name}", response_model=PartialPage)
 def get_person_md(university: Universities, category: Categories, name: Names):
-    with suppress(NotADirectoryError, FileNotFoundError):
+    try:
         html = render_person_html(name, university, category)
-        return ORJSONResponse(
-            {
-                "div": template.get_template("Article.jinja2").render(
-                    {"name": name, "markdown": html}
-                ),
-                "title": f"{name} - {university}{category}",
-            }
-        )
-
-    return PlainTextResponse(format_exc(chain=False), 404)
+    except FileNotFoundError:
+        return PlainTextResponse(f"{name} belongs to {'and'.join(get_people_map()[name])}", 404)
+    return ORJSONResponse(
+        {
+            "div": template.get_template("Article.jinja2").render({"name": name, "markdown": html}),
+            "title": f"{name} - {university}{category}",
+        }
+    )
 
 
 if version_info >= (3, 10):

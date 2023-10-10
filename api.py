@@ -11,9 +11,10 @@ from pydantic import AnyHttpUrl, BaseModel, Field
 from typing_extensions import NotRequired, TypedDict
 
 from core import template
-from person import Categories, Universities, name_count_map, people, render_person_html, render_university_html, universities
+from models import Categories, Names, PartialPage, Universities
+from person import name_count_map, people, render_person_html, render_university_html, universities
 
-router = APIRouter(prefix="/api", tags=["API"])
+router = APIRouter(prefix="/api")
 
 
 @router.get("/people/list", response_model=List[str])
@@ -32,7 +33,7 @@ def get_people_map():
     return ORJSONResponse(name_map)
 
 
-@router.get("/{university}", response_model=Dict[Literal["div", "title"], str])
+@router.get("/{university}", response_model=PartialPage)
 def get_university_md(university: Universities):
     with suppress(NotADirectoryError):
         html = render_university_html(university)
@@ -49,8 +50,8 @@ def get_university_md(university: Universities):
     return PlainTextResponse(format_exc(chain=False), 404)
 
 
-@router.get("/{university}/{category}/{name}", response_model=Dict[Literal["div", "title"], str])
-def get_person_md(university: Universities, category: Categories, name: str):
+@router.get("/{university}/{category}/{name}", response_model=PartialPage)
+def get_person_md(university: Universities, category: Categories, name: Names):
     with suppress(NotADirectoryError, FileNotFoundError):
         html = render_person_html(name, university, category)
         return ORJSONResponse(

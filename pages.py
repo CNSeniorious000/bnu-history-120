@@ -5,7 +5,8 @@ from fastapi import APIRouter, Request
 from fastapi.responses import PlainTextResponse
 
 from core import TemplateResponse
-from person import Categories, Universities, render_person_html, render_university_html, universities
+from models import Categories, Names, Universities
+from person import render_person_html, render_university_html, universities
 
 router = APIRouter(include_in_schema=False)
 
@@ -29,7 +30,7 @@ def get_university_info(request: Request, university: Universities):
 
 
 @router.get("/{university}/{category}/{name}")
-def get_person_info(request: Request, university: Universities, category: Categories, name: str):
+def get_person_info(request: Request, university: Universities, category: Categories, name: Names):
     with suppress(NotADirectoryError, FileNotFoundError):
         html = render_person_html(name, university, category)
         return TemplateResponse(

@@ -7,9 +7,6 @@ from markdown2 import markdown, markdown_path
 
 markdown_extensions = ["header-ids"]
 
-Universities = Literal["北师大", "辅大", "女高师"]
-Categories = Literal["校长", "校友", "教师", "创始人"]
-
 
 class University:
     def __init__(self, name: str, full_name: str):

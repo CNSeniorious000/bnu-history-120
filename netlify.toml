@@ -1,6 +1,7 @@
 [build]
 publish = "static"
 command = "pnpm build & pnpm ssg"
+edge_functions = "api"
 
 [functions]
 deno_import_map = "./netlify/denoImportMap.json"

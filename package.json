@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "ssg": "pip install poetry && poetry install && poetry run python ssg.py",
+    "ssg": "python3 install-deps.py && python3 ssg.py",
     "build": "unocss --minify",
     "dev": "unocss --watch"
   },

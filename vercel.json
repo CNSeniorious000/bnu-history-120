@@ -1,0 +1,12 @@
+{
+  "buildCommand": "pnpm build & pnpm ssg",
+  "cleanUrls": true,
+  "trailingSlash": false,
+  "installCommand": "pnpm install",
+  "outputDirectory": "static",
+  "rewrites": [
+    { "source": "/api/:match*", "destination": "/api/:match*.json" },
+    { "source": "/static/:match*", "destination": "/:match*" },
+    { "source": "/favicon.ico", "destination": "/static/favicon.ico" }
+  ]
+}

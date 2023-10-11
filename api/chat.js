@@ -2,9 +2,12 @@ import OpenAI from "openai";
 
 const encoder = new TextEncoder();
 
+/** @param {string} key */
+const getEnv = (key) => typeof Netlify !== "undefined" ? Netlify.env.get(key) : process.env[key]
+
 /** @param {Request} request */
 export default async (request) => {
-  const openai = new OpenAI({ apiKey: request.headers.get("Authorization")?.replace("Bearer ", "") ?? Netlify.env.get("OPENAI_API_KEY") ?? "", baseURL: Netlify.env.get("OPENAI_API_BASE") });
+  const openai = new OpenAI({ apiKey: request.headers.get("Authorization")?.replace("Bearer ", "") ?? getEnv("OPENAI_API_KEY") ?? "", baseURL: getEnv("OPENAI_API_BASE") });
 
   /** @type {import("openai/resources/chat/completions").ChatCompletionCreateParamsNonStreaming} */
   const params = await request.json();
@@ -13,7 +16,7 @@ export default async (request) => {
 
   const res = await openai.chat.completions.create({
     ...params,
-    model: Netlify.env.get("OPENAI_CHAT_MODEL") ?? "gpt-3.5-turbo",
+    model: getEnv("OPENAI_CHAT_MODEL") ?? "gpt-3.5-turbo",
     stream: true,
   });
 
@@ -36,4 +39,4 @@ export default async (request) => {
 
 
 /** @type {import("@netlify/edge-functions").Config} */
-export const config = { method: "POST" };
+export const config = { method: "POST", runtime: "edge" };

@@ -6,14 +6,13 @@ from pathlib import Path
 
 from httpx import AsyncClient
 
-from main import app
+from app import app
 
 Entry = namedtuple("Entry", "path slug")
 
 
 def api_entry(slug: str):
     """shortcut for constructing an JSON endpoint"""
-
     return Entry(f"{slug}.json", slug)
 
 

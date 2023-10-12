@@ -2,7 +2,7 @@ from typing import Literal
 
 from typing_extensions import TypeAlias, TypedDict
 
-from person import name_count_map
+from .data import name_count_map
 
 
 class PartialPage(TypedDict):

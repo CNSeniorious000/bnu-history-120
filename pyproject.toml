@@ -10,13 +10,13 @@ readme = "README.md"
 python = "^3.8"
 fastapi = { extras = ["all"], version = "^0.103.2" }
 markdown2 = "^2.4.10"
-rjsmin = "^1.2.1"
-rcssmin = "^1.1.1"
+rjsmin = "^1.2.2"
+rcssmin = "^1.1.2"
 loguru = "^0.7.2"
-brotli-asgi = "^1.4.0"
 
 [tool.poetry.group.dev.dependencies]
 promplate = { extras = ["openai"], version = "^0.2.2.7", python = "^3.10" }
+brotli-asgi = "^1.4.0"
 
 [tool.black]
 line-length = 100

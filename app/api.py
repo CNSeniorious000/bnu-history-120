@@ -1,8 +1,6 @@
 from collections import defaultdict
-from contextlib import suppress
 from functools import lru_cache
 from sys import version_info
-from traceback import format_exc
 from typing import Dict, List, Literal, Optional
 
 from fastapi import APIRouter, Header
@@ -10,9 +8,9 @@ from fastapi.responses import ORJSONResponse, PlainTextResponse, StreamingRespon
 from pydantic import BaseModel, Field
 from typing_extensions import NotRequired, TypedDict
 
-from core import template
-from models import Categories, Names, PartialPage, Universities
-from person import name_count_map, people, render_person_html, render_university_html, universities
+from .data import name_count_map, people, render_person_html, render_university_html, universities
+from .misc import template
+from .models import Categories, Names, PartialPage, Universities
 
 router = APIRouter(prefix="/api")
 

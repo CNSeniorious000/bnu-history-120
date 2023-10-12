@@ -1,7 +1,7 @@
 from collections import Counter
 from functools import lru_cache
 from pathlib import Path
-from typing import List, Literal
+from typing import List
 
 from markdown2 import markdown, markdown_path
 

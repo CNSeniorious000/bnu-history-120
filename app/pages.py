@@ -4,9 +4,9 @@ from traceback import format_exc
 from fastapi import APIRouter, Request
 from fastapi.responses import PlainTextResponse, RedirectResponse
 
-from core import TemplateResponse
-from models import Categories, Names, Universities
-from person import render_person_html, render_university_html, universities
+from .data import render_person_html, render_university_html, universities
+from .misc import TemplateResponse
+from .models import Categories, Names, Universities
 
 router = APIRouter(include_in_schema=False)
 

@@ -2,10 +2,10 @@ from fastapi import Request
 from markdown2 import markdown_path
 from starlette.staticfiles import StaticFiles
 
-from api import router as api
-from core import TemplateResponse, app
-from pages import router as pages
-from person import markdown_extensions
+from .api import router as api
+from .data import markdown_extensions
+from .misc import TemplateResponse, app
+from .pages import router as pages
 
 
 @app.get("/about", include_in_schema=False)

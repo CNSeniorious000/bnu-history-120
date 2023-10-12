@@ -1,3 +1,4 @@
+from contextlib import suppress
 from datetime import datetime
 from hashlib import md5
 from os import environ
@@ -5,7 +6,6 @@ from pathlib import Path
 from time import perf_counter_ns
 from urllib.parse import unquote
 
-from brotli_asgi import BrotliMiddleware
 from fastapi import FastAPI, Request, Response
 from fastapi.responses import ORJSONResponse, PlainTextResponse, RedirectResponse, StreamingResponse
 from loguru import logger
@@ -13,7 +13,7 @@ from rcssmin import cssmin
 from rjsmin import jsmin
 from starlette.templating import Jinja2Templates
 
-from person import universities
+from .data import universities
 
 STATIC = Path("./static/")
 
@@ -57,7 +57,10 @@ async def negotiated_cache(request: Request, call_next):
     )
 
 
-app.add_middleware(BrotliMiddleware, quality=11)
+with suppress(ModuleNotFoundError):
+    from brotli_asgi import BrotliMiddleware
+
+    app.add_middleware(BrotliMiddleware, quality=11)
 
 
 @app.middleware("http")

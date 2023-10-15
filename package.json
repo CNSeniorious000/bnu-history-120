@@ -4,6 +4,7 @@
     "build": "unocss --minify",
     "dev": "unocss --watch"
   },
+  "type": "module",
   "devDependencies": {
     "@iconify/json": "latest",
     "@netlify/edge-functions": "~2.2",

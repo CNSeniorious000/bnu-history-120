@@ -34,8 +34,8 @@ def find_entries():
         page_entry("about"),
         normal_entry("robots.txt"),
         normal_entry("common.css"),
-        normal_entry("api/people/list"),
-        normal_entry("api/people/dict"),
+        api_entry("api/people/list"),
+        api_entry("api/people/dict"),
         # FastAPI
         page_entry("docs"),
         page_entry("redoc"),

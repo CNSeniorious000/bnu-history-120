@@ -2,6 +2,7 @@
 
 html {
     scroll-behavior: smooth;
+    overflow-x: hidden;
 }
 
 body {
@@ -99,8 +100,8 @@ li > p {
 #article > article {
     padding: calc(min(10%, 7em));
     position: relative;
-    height: available;
-    width: available;
+    height: auto;
+    width: auto;
 }
 
 #markdown {
@@ -199,4 +200,38 @@ code {
 
 #links img:hover {
     filter: brightness(120%);
+}
+
+@media (max-width: 550px) {
+    h1 {
+        font-size: 25px;
+    }
+
+    h2 {
+        font-size: 23px;
+    }
+
+    h3 {
+        font-size: 21px;
+    }
+
+    h4 {
+        font-size: 19px;
+    }
+
+    h5 {
+        font-size: 17px;
+    }
+
+    p, h6, li, hr {
+        font-size: 15px;
+    }
+
+    ol, ul {
+        margin-left: 1.5em;
+    }
+
+    .category a {
+        font-size: 13px;
+    }
 }

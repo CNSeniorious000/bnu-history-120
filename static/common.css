@@ -234,4 +234,8 @@ code {
     .category a {
         font-size: 13px;
     }
+
+    .category {
+        line-height: 1.4em !important;
+    }
 }

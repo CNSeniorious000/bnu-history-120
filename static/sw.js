@@ -43,7 +43,6 @@ async function cacheAll() {
     console.log({ haveBeenCached });
 
     async function cacheOne(url) {
-        console.log(`caching: ${url}`);
         if (!haveBeenCached.includes(url)) {
             if (throttle) {
                 await semaphore.acquire();
@@ -52,6 +51,7 @@ async function cacheAll() {
             } else {
                 await cache.add(url);
             }
+            console.log(`caching: ${url}`);
         }
     }
 

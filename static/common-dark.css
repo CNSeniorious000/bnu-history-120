@@ -5,7 +5,6 @@ body {
 
 h1, h2, h3, h4, h5, h6 {
     color: var(--primary-color);
-    filter: brightness(300%);
 }
 
 blockquote {
@@ -41,10 +40,6 @@ strong {
 #markdown a {
     color: var(--primary-color);
     font-weight: 500;
-}
-
-#markdown p > a, #markdown li > a {
-    filter: brightness(300%);
 }
 
 .university a {

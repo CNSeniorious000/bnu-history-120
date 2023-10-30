@@ -172,6 +172,12 @@ code {
     --primary-color: #AF1E24;
 }
 
+@media (prefers-color-scheme: dark) {
+    :root {
+        --primary-color: #FF6E74;
+    }
+}
+
 #footer > a {
     left: 50%;
     transform: translateX(-50%);

@@ -45,7 +45,7 @@
     left: -4px;
 }
 
-button {
+#markdown button {
     display: inline;
     padding: 0;
     margin: 0;
@@ -56,22 +56,24 @@ button {
     cursor: help;
 }
 
-button:hover::before, button:hover::after {
+#markdown button:hover::before,
+#markdown button:hover::after {
     color: var(--shadow-color);
     opacity: 1;
 }
 
-button::before, button::after {
+#markdown button::before,
+#markdown button::after {
     opacity: 0.5;
     transition: all 120ms;
 }
 
-button::before {
+#markdown button::before {
     content: "{";
     margin-right: 1px;
 }
 
-button::after {
+#markdown button::after {
     content: "}";
     margin-left: 1px;
 }
@@ -96,7 +98,7 @@ a.current {
         color: white;
     }
 
-    button {
+    #markdown button {
         --shadow-color: var(--primary-color);
     }
 }
@@ -107,7 +109,7 @@ a.current {
         color: black;
     }
 
-    button {
+    #markdown button {
         --shadow-color: white;
     }
 }

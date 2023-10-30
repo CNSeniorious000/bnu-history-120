@@ -47,7 +47,7 @@ window.onpopstate = async () => {
     article.innerHTML = page_json["div"]
     document.title = page_json["title"]
     patch_hash_link()
-    document.querySelectorAll("button").forEach(add_tooltip_creator)
+    document.querySelectorAll("#markdown button").forEach(add_tooltip_creator)
 }
 
 // patch <a> tags
@@ -138,7 +138,7 @@ function add_tooltip_creator(button) {
 
 // make tooltips maintain themselves
 function patch_person_info() {
-    document.querySelectorAll("button").forEach(add_tooltip_creator);
+    document.querySelectorAll("#markdown button").forEach(add_tooltip_creator);
     ["mouseenter", "focus"].forEach(e => tooltip.addEventListener(e, () => popper_hovered = true));
     ["mouseleave", "blur"].forEach(e => tooltip.addEventListener(e, () => popper_hovered = false));
 }

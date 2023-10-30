@@ -1,3 +1,101 @@
-<div class="fixed w-10 h-10 right-10 bottom-10 rounded-full grid place-items-center bg-white dark:bg-[#111] hover:bg-$primary-color text-$primary-color hover:text-white shadow-black/10 shadow-md ring-black/5 ring-1.5 hover:ring-$primary-color dark:brightness-300 hover:scale-105 active:scale-95 cursor-pointer transition-all">
-    <div class="i-heroicons-ellipsis-vertical-20-solid text-xl"></div>
-</div>
+<button id="more" title="chat" type="button" class="fixed b-0 w-10 h-10 right-10 bottom-10 rounded-full grid place-items-center bg-white dark:bg-[#222] hover:bg-$primary-color text-$primary-color hover:text-white shadow-black/10 shadow-md ring-black/5 ring-1.5 hover:ring-$primary-color hover:scale-105 active:scale-95 cursor-pointer transition-all">
+  <span class="i-ri-openai-fill text-xl"></span>
+</button>
+
+<script type="importmap">
+  {
+    "imports": {
+      "partial-json": "https://esm.run/partial-json",
+      "html-to-md": "https://esm.run/html-to-md"
+    }
+  }
+</script>
+
+<script type="module">
+  import { parse } from "partial-json";
+  import html2md from "html-to-md";
+
+  let temperature = 1;
+
+  async function* iterChat(messages) {
+    const stream = await fetch("/api/chat", {
+      headers: { accept: "application/json", "content-type": "application/json" },
+      body: JSON.stringify({ messages, model: "gpt-3.5-turbo", temperature }),
+      method: "POST",
+    }).then((res) => res.body);
+
+    const reader = stream.getReader();
+    let decoder = new TextDecoder();
+
+    try {
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        yield decoder.decode(value);
+      }
+    } catch (error) {
+      console.error(error);
+    } finally {
+      reader.releaseLock();
+    }
+  }
+
+  async function* streamChat(messages) {
+    let whole = "";
+
+    for await (let i of iterChat(messages)) {
+      whole += i;
+      yield whole;
+    }
+  }
+
+  async function* streamJsonChat(messages) {
+    for await (let i of iterChat(messages)) {
+      try {
+        yield parse(i);
+      } catch (e) {
+        console.error(e);
+      }
+    }
+  }
+
+  function getPersonInfo() {
+    const html = document.getElementById("markdown").innerHTML;
+    const md = html2md(html, { aliasTags: { button: "strong" } });
+    console.log(md);
+    return {
+      description: md,
+      name: document.querySelector("#markdown > h1").textContent,
+    };
+  }
+
+  let headMessages;
+  let startMessages;
+  let visibleMessages;
+
+  function resetMessages() {
+    const { name, description } = getPersonInfo();
+
+    headMessages = [
+      {
+        role: "system",
+        content: "请基于且仅基于 background_information 回答用户提问。如果用户提问涉及任何 background_information 中没有提到的内容，则必须立刻拒绝回答。在下面的对话中，请你扮演${name}，以其口吻与用户对话。",
+      },
+      { role: "system", name: "background_information", content: description },
+    ];
+
+    startMessages = [{ role: "user", content: "请你以第一人称介绍一下你自己，限制在3句话以内。尽可能多介绍你与众不同的地方。" }];
+
+    visibleMessages = [];
+  }
+
+  const moreButton = document.getElementById("more");
+
+  moreButton.addEventListener("click", async () => {
+    resetMessages();
+    temperature = visibleMessages.length ? 1.1 : 0.3;
+    for await (let i of streamChat(headMessages.concat(visibleMessages.length ? visibleMessages : startMessages))) {
+      console.log(i);
+    }
+  });
+</script>

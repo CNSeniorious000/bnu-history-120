@@ -3,9 +3,11 @@ from re import DOTALL, search
 from typing import Dict
 
 content = open("./pyproject.toml").read()
-match = search(r'\[tool.poetry.dependencies\]\npython = "[^"]+"\n(.+?)\n\n', content, DOTALL)
-
-if match:
+if match := search(
+    r'\[tool.poetry.dependencies\]\npython = "[^"]+"\n(.+?)\n\n',
+    content,
+    DOTALL,
+):
     dependencies = match.group(1)
 else:
     print("No match found.")
@@ -24,7 +26,7 @@ for k, v in dependencies_dict.items():
         extras, version = search(r'extras = \["(.+)"\], version = "(.+)"', v).groups()
         install_str_parts.append(f"{k}[{extras}]={version}")
     else:
-        install_str_parts.append(k + "=" + v.strip('" '))
+        install_str_parts.append(f"{k}=" + v.strip('" '))
 
 install_command = " ".join(install_str_parts).replace("=^", "==")
 

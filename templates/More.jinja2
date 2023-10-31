@@ -93,7 +93,7 @@
 
   moreButton.addEventListener("click", async () => {
     resetMessages();
-    temperature = visibleMessages.length ? 1.1 : 0.3;
+    temperature = visibleMessages.length ? 0.3 : 1;
     for await (let i of streamChat(headMessages.concat(visibleMessages.length ? visibleMessages : startMessages))) {
       console.log(i);
     }

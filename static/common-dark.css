@@ -21,10 +21,6 @@ hr {
     opacity: 2%;
 }
 
-body::-webkit-scrollbar {
-    display: none;
-}
-
 p, li, hr, blockquote {
     font-weight: 200;
 }

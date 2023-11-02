@@ -18,6 +18,10 @@ body {
     letter-spacing: 0.5pt;
 }
 
+*::-webkit-scrollbar {
+    display: none;
+}
+
 strong {
     font-weight: 700;
 }

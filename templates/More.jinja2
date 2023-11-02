@@ -1,6 +1,21 @@
-<button id="more" title="chat" type="button" class="fixed b-0 w-10 h-10 right-10 bottom-10 rounded-full grid place-items-center bg-white dark:bg-[#222] hover:bg-$primary-color text-$primary-color hover:text-white shadow-black/10 shadow-md ring-black/5 ring-1.5 hover:ring-$primary-color hover:scale-105 active:scale-95 cursor-pointer transition-all">
-  <span class="i-ri-openai-fill text-xl"></span>
-</button>
+<script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2/dist/alpine.min.js" defer></script>
+
+<div x-data="Message('assistant')" class="fixed right-10 bottom-10 flex flex-col items-end gap-5">
+  <section class="h-lg relative overflow-hidden max-h-80vh w-100 max-w-60vw bg-white dark:bg-#111 rounded-5 font-sans text-xs md:text-sm shadow-black/5 shadow-md ring-#80808010 ring-1.5">
+    <div class="mt-10 p-3.5 overflow-y-scroll h-full [&>div]:rounded-lg [&>div]:px-3 [&>div]:py-2 [&>div]:bg-#80808020 [&>div:last-child]:mb-17 flex flex-col gap-2 md:gap-3">
+      <template x-if="content">
+        <div x-show="content" x-html="content" class="transition" x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0 scale-90" x-transition:enter-end="opacity-100 scale-100"></div>
+      </template>
+    </div>
+    <div class="absolute font-bold top-0 left-0 right-0 b-b-1 b-b-solid b-#80808030 shadow-sm shadow-black/5 backdrop-blur-20 px-3.5 h-10 flex flex-col justify-center bg-#f8f8f8a0 dark:bg-#101010a0">
+      {{ title }}
+    </div>
+  </section>
+
+  <button id="more" @click="initChat" title="chat" type="button" class="b-0 w-10 h-10 rounded-full grid place-items-center bg-white dark:bg-[#222] hover:bg-$primary-color text-$primary-color hover:text-white shadow-black/10 shadow-md ring-black/5 ring-1.5 hover:ring-$primary-color hover:scale-105 active:scale-95 cursor-pointer transition-all">
+    <span class="i-ri-openai-fill text-xl"></span>
+  </button>
+</div>
 
 <script type="importmap">
   {
@@ -84,18 +99,40 @@
       { role: "system", name: "background_information", content: description },
     ];
 
-    startMessages = [{ role: "user", content: "请你以第一人称介绍一下你自己，限制在3句话以内。尽可能多介绍你与众不同的地方。" }];
+    startMessages = [
+      {
+        role: "user",
+        content: "请你以第一人称介绍一下你自己，限制在3句话以内。尽可能多介绍你与众不同的地方。",
+      },
+    ];
 
     visibleMessages = [];
   }
 
   const moreButton = document.getElementById("more");
 
-  moreButton.addEventListener("click", async () => {
+  window.startIntroduction = async function (callback = console.log) {
     resetMessages();
     temperature = visibleMessages.length ? 0.3 : 1;
     for await (let i of streamChat(headMessages.concat(visibleMessages.length ? visibleMessages : startMessages))) {
-      console.log(i);
+      callback(i);
     }
-  });
+  };
+</script>
+
+<script>
+  const Message = (role) => {
+    let content = "";
+    return {
+      role,
+      content,
+      updateContent: function (newContent) {
+        this.content = newContent;
+      },
+      initChat: async function () {
+        this.updateContent("");
+        return window.startIntroduction(this.updateContent.bind(this));
+      },
+    };
+  };
 </script>

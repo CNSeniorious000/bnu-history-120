@@ -1,8 +1,8 @@
 {
-  "buildCommand": "pnpm build & pnpm ssg",
+  "buildCommand": "bun run build & bun run ssg",
   "cleanUrls": true,
   "trailingSlash": false,
-  "installCommand": "pnpm install",
+  "installCommand": "bun install",
   "outputDirectory": "static",
   "rewrites": [
     { "source": "/api/:match*", "destination": "/api/:match*.json" },

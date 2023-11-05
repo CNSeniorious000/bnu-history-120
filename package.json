@@ -14,6 +14,6 @@
     "@unocss/preset-uno": "~0.57"
   },
   "dependencies": {
-    "openai": "^4.15.3"
+    "openai": "~4.11"
   }
 }

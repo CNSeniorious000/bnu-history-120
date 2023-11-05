@@ -94,7 +94,7 @@
     headMessages = [
       {
         role: "system",
-        content: "请基于且仅基于 background_information 回答用户提问。如果用户提问涉及任何 background_information 中没有提到的内容，则必须立刻拒绝回答。在下面的对话中，请你扮演${name}，以其口吻与用户对话。",
+        content: `请基于且仅基于 background_information 回答用户提问。如果用户提问涉及任何 background_information 中没有提到的内容，则必须立刻拒绝回答。在下面的对话中，请你扮演${name}，以其口吻与用户对话。`,
       },
       { role: "system", name: "background_information", content: description },
     ];

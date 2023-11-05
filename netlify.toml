@@ -1,14 +1,9 @@
 [build]
 publish = "static"
-command = "pnpm build & pnpm ssg"
-edge_functions = "api"
+command = "bun run build & bun run ssg"
 
 [functions]
-deno_import_map = "./netlify/denoImportMap.json"
-
-[[edge_functions]]
-path = "/api/chat"
-function = "chat"
+directory = "api"
 
 [[redirects]]
 from = "/api/*"

@@ -39,4 +39,4 @@ export default async (request) => {
 
 
 /** @type {import("@netlify/edge-functions").Config} */
-export const config = { method: "POST", runtime: "edge" };
+export const config = { method: "POST", runtime: "edge", path: "/api/chat" };

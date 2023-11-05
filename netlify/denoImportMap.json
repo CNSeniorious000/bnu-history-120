@@ -1,5 +1,0 @@
-{
-  "imports": {
-    "openai": "https://esm.sh/openai@~4.0"
-  }
-}

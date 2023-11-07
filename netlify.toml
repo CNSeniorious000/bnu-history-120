@@ -6,6 +6,10 @@ edge_functions = "api"
 [functions]
 deno_import_map = "./api/importmap.json"
 
+[[edge_functions]]
+path = "/api/chat"
+function = "chat"
+
 [[redirects]]
 from = "/api/*"
 to = "/api/:splat.json"

@@ -1,4 +1,4 @@
-import OpenAI from "openai";
+import OpenAI from "https://deno.land/x/openai@v4.16.1/shims/node.ts";
 
 const encoder = new TextEncoder();
 

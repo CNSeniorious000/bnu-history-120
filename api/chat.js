@@ -31,7 +31,7 @@ export default async (request) => {
   });
 
 
-  const headers = new Headers(res.response.headers)
+  const headers = new Headers(res?.response?.headers ?? {})  // can't access headers in newer version
   headers.set("content-type", "text/plain")
 
   return new Response(stream, { headers });

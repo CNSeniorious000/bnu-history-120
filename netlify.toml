@@ -1,9 +1,10 @@
 [build]
 publish = "static"
 command = "bun run build & bun run ssg"
+edge_functions = "api"
 
 [functions]
-directory = "api"
+deno_import_map = "./api/importmap.json"
 
 [[redirects]]
 from = "/api/*"

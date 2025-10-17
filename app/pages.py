@@ -38,7 +38,7 @@ def get_person_info(request: Request, university: Universities, category: Catego
             {
                 "request": request,
                 "name": name,
-                "title": f"{name} - {university}{category}",
+                "title": f"{name} • {university}{category}",
                 "markdown": html,
             },
         )

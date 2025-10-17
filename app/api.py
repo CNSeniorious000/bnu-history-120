@@ -54,7 +54,7 @@ def get_person_md(university: Universities, category: Categories, name: Names):
     return ORJSONResponse(
         {
             "div": template.get_template("Article.jinja2").render({"name": name, "markdown": html}),
-            "title": f"{name} - {university}{category}",
+            "title": f"{name} • {university}{category}",
         }
     )
 

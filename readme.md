@@ -2,7 +2,7 @@
 
 本站资料由 2020 级北师珠本科生 **蔡伟俊**、**唐佳** 人工收集整理自海量文献，后由 **徐景喆**、[**庄毅辉**](https://github.com/CNSeniorious000 "Muspi Merol") 略加处理。项目成员还包括潘泽嘉师兄和姜赢导师。
 
-> 本大创项目最初诞生于[北师大120周年校庆](https://120th.bnu.edu.cn/)前后，虽然这个项目组最终由于以我为首的一些拖延不欢而散，但毕竟这些资料基本完整，于是这个网站仍然被维护，作为当年成果的一个 snapshot，希望能给互联网带来一些价值。
+> 本大创项目最初诞生于 [北师大120周年校庆](https://120th.bnu.edu.cn/) 前后，虽然这个项目组最终由于以我为首的一些拖延不欢而散，但毕竟这些资料基本完整，于是这个网站仍然被维护，作为当年成果的一个 snapshot，希望能给互联网带来一些价值。
 >
 > 如果在浏览本站的你有什么纠错/建议或者任何想说的，欢迎在 [Issues](https://github.com/CNSeniorious000/bnu-history-120/issues) 或者 [Discussions](https://github.com/CNSeniorious000/bnu-history-120/discussions) 版块留言！
 >

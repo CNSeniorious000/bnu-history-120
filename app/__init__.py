@@ -16,8 +16,8 @@ def about_page(request: Request):
         {
             "request": request,
             "non_spa": True,
-            "title": "🏗 under construction",
-            "name": "readme.md",
+            "title": "README • 关于本站",
+            "name": "README.md",
             "markdown": markdown_path("./readme.md", extras=markdown_extensions),
         },
     )

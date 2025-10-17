@@ -19,7 +19,7 @@ for line in dependencies.split("\n"):
 
 print(dependencies_dict)
 
-install_str_parts = ["pip install"]
+install_str_parts = ["python3 -m pip install"]
 
 for k, v in dependencies_dict.items():
     if "{" in v:

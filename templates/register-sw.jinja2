@@ -1,0 +1,19 @@
+<script>
+    // Only register service worker if running in PWA mode
+    function registerServiceWorkerIfPWA() {
+        const isPWA = window.matchMedia('(display-mode: standalone)').matches ||
+                      window.matchMedia('(display-mode: minimal-ui)').matches ||
+                      window.matchMedia('(display-mode: fullscreen)').matches ||
+                      window.matchMedia('(display-mode: window-controls-overlay)').matches;
+        
+        if (isPWA && 'serviceWorker' in navigator) {
+            navigator.serviceWorker.register("/sw.js", {scope: "/"}).then(console.log);
+        }
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', registerServiceWorkerIfPWA);
+    } else {
+        registerServiceWorkerIfPWA();
+    }
+</script>

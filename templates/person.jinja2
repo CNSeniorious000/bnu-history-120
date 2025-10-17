@@ -74,6 +74,6 @@
     </script>
 {% endif %}
 
-<script> if ("serviceWorker" in navigator) navigator.serviceWorker.register("/sw.js", {scope: "/"}).then(console.log) </script>
+{% include "register-sw.jinja2" %}
 
 </html>

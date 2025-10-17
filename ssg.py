@@ -4,7 +4,7 @@ from asyncio import run
 from collections import namedtuple
 from pathlib import Path
 
-from httpx import AsyncClient
+from httpx import ASGITransport, AsyncClient
 
 from app import app
 
@@ -55,7 +55,7 @@ def find_entries():
 
 
 client = AsyncClient(
-    app=app,
+    transport=ASGITransport(app),
     base_url="https://<SSG>",
     headers={"accept-encoding": "identity"},
 )

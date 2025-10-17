@@ -14,6 +14,7 @@ dependencies = [
     "loguru>=0.7.2",
     "promplate[openai]~=0.2.2.9",
     "brotli-asgi>=1.4.0",
+    "httpx>=0.28.1",
 ]
 
 [tool.black]

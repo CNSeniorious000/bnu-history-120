@@ -58,9 +58,9 @@ async def negotiated_cache(request: Request, call_next):
 
 
 with suppress(ModuleNotFoundError):
-    from brotli_asgi import BrotliMiddleware
+    from zstd_asgi import ZstdMiddleware
 
-    app.add_middleware(BrotliMiddleware, quality=11)
+    app.add_middleware(ZstdMiddleware)
 
 
 @app.middleware("http")

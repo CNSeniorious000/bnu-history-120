@@ -6,6 +6,7 @@ from .api import router as api
 from .data import markdown_extensions
 from .misc import TemplateResponse, app
 from .pages import router as pages
+from .seo import router as seo
 
 
 @app.get("/about", include_in_schema=False)
@@ -29,4 +30,5 @@ def home_page(request: Request):
 
 app.mount("/static/", StaticFiles(directory="./static/"))
 app.include_router(api)
+app.include_router(seo)
 app.include_router(pages)

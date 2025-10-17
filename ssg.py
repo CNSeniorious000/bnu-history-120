@@ -34,13 +34,15 @@ def find_entries():
         page_entry("about"),
         normal_entry("robots.txt"),
         normal_entry("common.css"),
-        normal_entry("sitemap.xml"),
         api_entry("api/people/list"),
         api_entry("api/people/dict"),
         # FastAPI
         page_entry("docs"),
         page_entry("redoc"),
         normal_entry("openapi.json"),
+        # SEO endpoints
+        normal_entry("sitemap.xml"),
+        normal_entry("llms.txt"),
     ]
 
     root = Path("data")
@@ -52,6 +54,7 @@ def find_entries():
             slug = path.relative_to(root).with_suffix("").as_posix()
         entries.append(page_entry(slug))
         entries.append(api_entry(f"api/{slug}"))
+        entries.append(normal_entry(f"{slug}.md"))
     return entries
 
 

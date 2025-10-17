@@ -13,11 +13,7 @@
 
     // Only register service worker if running in PWA mode
     function registerServiceWorkerIfPWA() {
-        const isPWA = window.matchMedia('(display-mode: standalone)').matches ||
-                      window.matchMedia('(display-mode: minimal-ui)').matches ||
-                      window.matchMedia('(display-mode: fullscreen)').matches ||
-                      window.matchMedia('(display-mode: window-controls-overlay)').matches;
-        if (isPWA) {
+        if (matchMedia('(display-mode: standalone), (display-mode: minimal-ui), (display-mode: fullscreen), (display-mode: window-controls-overlay)').matches) {
             registerServiceWorker();
         }
     }

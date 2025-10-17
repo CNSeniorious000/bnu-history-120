@@ -1,6 +1,7 @@
 [tool.poetry]
 name = "bnu-history-120"
 version = "0.1.0"
+package-mode = false
 description = ""
 authors = ["Muspi Merol <admin@muspimerol.site>"]
 license = "MIT"

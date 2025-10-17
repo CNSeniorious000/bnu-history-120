@@ -1,5 +1,5 @@
 from collections import defaultdict
-from functools import lru_cache
+from functools import cache
 from sys import version_info
 from typing import Dict, List, Literal, Optional
 
@@ -16,13 +16,13 @@ router = APIRouter(prefix="/api")
 
 
 @router.get("/people/list", response_model=List[str])
-@lru_cache(None)
+@cache
 def get_name_set():
     return ORJSONResponse(list(name_count_map))
 
 
 @router.get("/people/dict", response_class=ORJSONResponse)
-@lru_cache(None)
+@cache
 def get_people_map() -> Dict[str, List[str]]:
     name_map = defaultdict(list)
     for person in people:

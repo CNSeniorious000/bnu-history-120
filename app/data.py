@@ -1,5 +1,5 @@
 from collections import Counter
-from functools import lru_cache
+from functools import cache
 from pathlib import Path
 from typing import List
 
@@ -21,7 +21,7 @@ class University:
             if path.is_dir():
                 self.categories.append(path.name)
 
-    @lru_cache(maxsize=None)
+    @cache
     def filter_category(self, category: str):
         return [Person(path.stem, self, category) for path in (self.path / category).glob("*.md")]
 
@@ -65,12 +65,12 @@ class Person:
         return self.name
 
 
-@lru_cache(maxsize=None)
+@cache
 def render_university_html(name: str, /):
     return universities[name].html
 
 
-@lru_cache(maxsize=None)
+@cache
 def render_person_html(name: str, university_name: str, category: str, /):
     return Person(name, universities[university_name], category).html
 

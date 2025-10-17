@@ -11,7 +11,6 @@
     "@netlify/edge-functions": "~2.2",
     "@unocss/cli": "~0.57",
     "@unocss/preset-icons": "~0.57",
-    "@unocss/preset-uno": "~0.57",
-    "openai": "~4.11"
+    "@unocss/preset-uno": "~0.57"
   }
 }

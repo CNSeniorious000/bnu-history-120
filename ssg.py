@@ -34,6 +34,7 @@ def find_entries():
         page_entry("about"),
         normal_entry("robots.txt"),
         normal_entry("common.css"),
+        normal_entry("sitemap.xml"),
         api_entry("api/people/list"),
         api_entry("api/people/dict"),
         # FastAPI

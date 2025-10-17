@@ -1,30 +1,23 @@
-[tool.poetry]
+[project]
 name = "bnu-history-120"
 version = "0.1.0"
-package-mode = false
 description = ""
-authors = ["Muspi Merol <admin@muspimerol.site>"]
-license = "MIT"
+authors = [{ name = "Muspi Merol", email = "admin@muspimerol.site" }]
+license = { text = "MIT" }
 readme = "README.md"
-
-[tool.poetry.dependencies]
-python = "^3.8"
-fastapi = { extras = ["all"], version = "^0.103.2" }
-markdown2 = "^2.4.10"
-rjsmin = "^1.2.2"
-rcssmin = "^1.1.2"
-loguru = "^0.7.2"
-
-[tool.poetry.group.dev.dependencies]
-promplate = { extras = ["openai"], version = "^0.2.2.9", python = "^3.10" }
-brotli-asgi = "^1.4.0"
+requires-python = ">=3.12"
+dependencies = [
+    "fastapi[all]>=0.103.2",
+    "markdown2>=2.4.10",
+    "rjsmin>=1.2.2",
+    "rcssmin>=1.1.2",
+    "loguru>=0.7.2",
+    "promplate[openai]~=0.2.2.9",
+    "brotli-asgi>=1.4.0",
+]
 
 [tool.black]
 line-length = 100
 
 [tool.isort]
 line_length = 1000
-
-[build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"

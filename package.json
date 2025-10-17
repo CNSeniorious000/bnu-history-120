@@ -1,7 +1,7 @@
 {
   "scripts": {
     "serve": "poetry run uvicorn app:app --reload --reload-include *.jinja2",
-    "ssg": "python3 install-deps.py && python3 ssg.py",
+    "ssg": "uv sync && uv run ssg.py",
     "build": "unocss --minify",
     "dev": "unocss --watch"
   },

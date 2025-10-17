@@ -1,6 +1,11 @@
 [build]
 publish = "static"
-command = "bun run build & bun run ssg"
+command = """
+curl -LsSf https://astral.sh/uv/install.sh | sh && \
+bun run build && \
+/opt/buildhome/.local/bin/uv sync && \
+/opt/buildhome/.local/bin/uv run ssg.py
+"""
 edge_functions = "api"
 
 [functions]

@@ -3,7 +3,7 @@ from functools import cache
 from pathlib import Path
 from urllib.parse import quote
 
-from fastapi import APIRouter
+from fastapi import APIRouter, Request
 from fastapi.responses import PlainTextResponse
 
 from .data import Person, people, universities
@@ -80,15 +80,20 @@ def linkify(text: str, from_whom: Person | None = None):
 
 
 @router.get("/{university}.md", response_class=PlainTextResponse)
-def get_university_note(university: Universities):
+def get_university_note(request: Request, university: Universities):
     u = universities[university]
-    return linkify(f"# {u.full_name}\n\n{(u.path / 'index.md').read_text('utf-8')}")
+    return linkify(
+        f"# {u.full_name} https://bnu.muspimerol.site{quote(request.url.path)}\n\n{(u.path / 'index.md').read_text('utf-8')}"
+    )
 
 
 @router.get("/{university}/{category}/{name}.md", response_class=PlainTextResponse)
-def get_person_note(university: Universities, category: Categories, name: Names):
+def get_person_note(request: Request, university: Universities, category: Categories, name: Names):
     p = Person(name, universities[university], category)
-    return linkify(f"# {name} - {university}{category}\n\n{p.content.lstrip()}", p)
+    return linkify(
+        f"# {name} - {university}{category} https://bnu.muspimerol.site{quote(request.url.path)}\n\n{p.content.lstrip()}",
+        p,
+    )
 
 
 @router.get("/llms.txt", response_class=PlainTextResponse)

@@ -1,13 +1,24 @@
 <script>
+    async function registerServiceWorker() {
+        if (!('serviceWorker' in navigator)) {
+            return;
+        }
+
+        const registrations = await navigator.serviceWorker.getRegistrations();
+
+        if (registrations.length === 0) {
+            await navigator.serviceWorker.register("/sw.js", { scope: "/" });
+        }
+    }
+
     // Only register service worker if running in PWA mode
     function registerServiceWorkerIfPWA() {
         const isPWA = window.matchMedia('(display-mode: standalone)').matches ||
                       window.matchMedia('(display-mode: minimal-ui)').matches ||
                       window.matchMedia('(display-mode: fullscreen)').matches ||
                       window.matchMedia('(display-mode: window-controls-overlay)').matches;
-        
-        if (isPWA && 'serviceWorker' in navigator) {
-            navigator.serviceWorker.register("/sw.js", {scope: "/"}).then(console.log);
+        if (isPWA) {
+            registerServiceWorker();
         }
     }
 
@@ -16,4 +27,7 @@
     } else {
         registerServiceWorkerIfPWA();
     }
+
+    // Register service worker when PWA is installed
+    window.addEventListener('appinstalled', registerServiceWorker);
 </script>

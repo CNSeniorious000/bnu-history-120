@@ -1,3 +1,4 @@
+from collections import defaultdict
 from functools import cache
 from pathlib import Path
 from urllib.parse import quote
@@ -55,16 +56,39 @@ def get_sitemap():
     return PlainTextResponse(tostring(urlset, encoding="unicode"), media_type="application/xml")
 
 
+def linkify(text: str, from_whom: Person | None = None):
+    related = [p for p in people if p != from_whom and p.name in text]
+
+    print(related)
+
+    if not related:
+        return text
+
+    title_map: dict[str, list[tuple[str, str]]] = defaultdict(list)
+
+    for p in related:
+        title_map[p.name].append((p.university.name, p.category))
+
+    return (
+        text.rstrip()
+        + "\n\n---\n\n相关人物：\n\n"
+        + "\n".join(
+            f"{name}（{'、'.join(f'[{u}{c}](/{quote(u)}/{quote(c)}/{quote(name)}.md)' for u, c in titles)}）"
+            for name, titles in title_map.items()
+        )
+    )
+
+
 @router.get("/{university}.md", response_class=PlainTextResponse)
 def get_university_note(university: Universities):
     u = universities[university]
-    return f"# {u.full_name}\n\n{(u.path / 'index.md').read_text('utf-8')}"
+    return linkify(f"# {u.full_name}\n\n{(u.path / 'index.md').read_text('utf-8')}")
 
 
 @router.get("/{university}/{category}/{name}.md", response_class=PlainTextResponse)
 def get_person_note(university: Universities, category: Categories, name: Names):
     p = Person(name, universities[university], category)
-    return f"# {name} - {university}{category}\n\n{p.content.lstrip()}"
+    return linkify(f"# {name} - {university}{category}\n\n{p.content.lstrip()}", p)
 
 
 @router.get("/llms.txt", response_class=PlainTextResponse)

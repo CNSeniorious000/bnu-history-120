@@ -10,7 +10,7 @@
 
 ### Deployed | 开始浏览
 
-你可以通过 [bnu.muspimerol.site](https://bnu.muspimerol.site/) 访问本网站。网站由 Jinja2 简单地渲染自一些 markdown 文件，现在通过一个 SSG 脚本静态化，部署到 [Vercel](https://bnu120.vercel.app/) 和 [Netlify](https://bnu120.netlify.app/) 上。你也可以在 [这个目录](https://github.com/CNSeniorious000/bnu-history-120/tree/master/data) 直接浏览所有 markdown 文档。我们也提供开放 API，文档见 [Swagger](https://bnu.muspimerol.site/docs) / [ReDoc](https://bnu.muspimerol.site/redoc)
+你可以通过 [bnu.muspimerol.site](https://bnu.muspimerol.site/) 访问本网站。网站由 Jinja2 简单地渲染自一些 markdown 文件，现在通过一个 SSG 脚本静态化，部署到 [Vercel](https://bnu120.vercel.app/) 和 [Netlify](https://bnu120.netlify.app/) 上。你也可以在 [这个目录](https://github.com/CNSeniorious000/bnu-history-120/tree/master/data) 直接浏览所有 markdown 文档。我们也提供开放 API，文档见 [Elements](https://bnu.muspimerol.site/api) / [Swagger](https://bnu.muspimerol.site/docs) / [ReDoc](https://bnu.muspimerol.site/redoc)
 
 ### Development | 本地开发
 

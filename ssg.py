@@ -33,6 +33,7 @@ def find_entries():
         Entry("index.html", ""),
         page_entry("about"),
         normal_entry("robots.txt"),
+        normal_entry("favicon.ico"),
         normal_entry("common.css"),
         api_entry("api/people/list"),
         api_entry("api/people/dict"),

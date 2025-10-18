@@ -5,13 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0">
     <title>BNU 120 校史百科</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/parallax/3.1.0/parallax.min.js"></script>
-    <link rel="manifest" href="/static/manifest.json" type="application/manifest+json">
-    <link rel="canonical" href="https://bnu.muspimerol.site{{ request.path }}">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="uno.css">
-    <link rel="stylesheet"
-          href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@200;300;400;500;600;700;900&display=swap">
+    {% include "head-links.jinja2" %}
     {{ env.HEAD_SCRIPTS | safe }}
     <style>
         body {

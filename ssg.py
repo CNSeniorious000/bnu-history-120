@@ -63,6 +63,7 @@ client = AsyncClient(
     transport=ASGITransport(app),
     base_url="https://<SSG>",
     headers={"accept-encoding": "identity"},
+    follow_redirects=True,
 )
 
 

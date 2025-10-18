@@ -72,7 +72,7 @@ async function cacheAll() {
     const peopleUrls = await fetch("/api/people/dict")
         .then((res) => res.json())
         .then(Object.values)
-        .then((urlLists) => [].concat(...urlLists));
+        .then((urlLists) => [].concat(...urlLists, "/about"));
 
     throttle = true;
 

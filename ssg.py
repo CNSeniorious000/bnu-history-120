@@ -37,6 +37,7 @@ def find_entries():
         normal_entry("common.css"),
         api_entry("api/people/list"),
         api_entry("api/people/dict"),
+        api_entry("api/about"),
         # FastAPI
         page_entry("docs"),
         page_entry("redoc"),

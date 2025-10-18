@@ -4,7 +4,7 @@ from starlette.staticfiles import StaticFiles
 
 from .api import router as api
 from .data import markdown_extensions
-from .misc import TemplateResponse, app
+from .misc import TemplateResponse, app, template
 from .pages import router as pages
 from .seo import router as seo
 
@@ -15,12 +15,24 @@ def about_page(request: Request):
         "person.jinja2",
         {
             "request": request,
-            "non_spa": True,
             "title": "README • 关于本站",
             "name": "README.md",
             "markdown": markdown_path("./readme.md", extras=markdown_extensions),
         },
     )
+
+
+@app.get("/api/about", include_in_schema=False)
+def get_about_md():
+    return {
+        "div": template.get_template("Article.jinja2").render(
+            {
+                "name": "README.md",
+                "markdown": markdown_path("./readme.md", extras=markdown_extensions),
+            }
+        ),
+        "title": "README • 关于本站",
+    }
 
 
 @app.get("/", include_in_schema=False)

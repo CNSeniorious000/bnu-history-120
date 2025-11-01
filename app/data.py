@@ -31,7 +31,7 @@ class University:
 
     @property
     def html(self):
-        return add_links(markdown_path(self.path / "index.md", extras=markdown_extensions))
+        return add_links(markdown_path(str(self.path / "index.md"), extras=markdown_extensions))
 
     def __repr__(self):
         return self.name
@@ -88,7 +88,7 @@ people: List[Person] = [
 name_count_map = Counter((person.name for person in people))
 
 
-def add_links(text: str, exclude_name: str = None):
+def add_links(text: str, exclude_name: str | None = None):
     for name, count in name_count_map.items():
         if (count > 1 or name != exclude_name) and name in text:
             text = text.replace(name, f'<button type="button">{name}</button>')

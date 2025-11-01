@@ -44,7 +44,7 @@ async def negotiated_cache(request: Request, call_next):
     if response.status_code // 100 != 2:
         return response
 
-    body = b"".join([part async for part in response.body_iterator])
+    body = b"".join([part async for part in response.body_iterator])  # type: ignore
 
     if (new_etag := f'W/"{md5(body).hexdigest()}"') == etag:
         return Response(None, 304)

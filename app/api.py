@@ -89,10 +89,10 @@ class CreateChatCompletion(BaseModel):
     presence_penalty: Optional[float] = Field(None, examples=[None], ge=-2, le=2)
 
 
-@router.post("/chat")
+@router.post("/chat", response_model=str)
 async def chat_complete(
     data: CreateChatCompletion, api_key: str = Header("", alias="Authorization")
-) -> str:
+):
     return StreamingResponse(
         agenerate(data.messages, **data.model_dump(exclude_defaults=True), api_key=api_key),
         media_type="text/plain",

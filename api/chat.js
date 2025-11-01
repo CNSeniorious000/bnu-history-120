@@ -1,4 +1,4 @@
-import OpenAI from "openai";
+import OpenAI from "https://esm.sh/openai";
 
 const encoder = new TextEncoder();
 

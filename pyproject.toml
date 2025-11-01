@@ -7,7 +7,9 @@ license = { text = "MIT" }
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
-    "fastapi[all]~=0.118.3",
+    "fastapi~=0.120.4",
+    "jinja2~=3.1.6",
+    "uvicorn~=0.38.0",
     "markdown2~=2.5.4",
     "rjsmin~=1.2.5",
     "rcssmin~=1.2.2",
@@ -15,6 +17,8 @@ dependencies = [
     "promplate[openai]~=0.2.2.9",
     "zstd-asgi~=1.0",
     "httpx~=0.28.1",
+    "dotenv-pth~=1.0",
+    "orjson~=3.11.4",
 ]
 
 [tool.black]

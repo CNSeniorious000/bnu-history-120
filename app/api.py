@@ -62,10 +62,7 @@ def get_person_md(university: Universities, category: Categories, name: Names):
 if version_info >= (3, 10):
     from os import getenv
 
-    from dotenv import load_dotenv
     from promplate.llm.openai import AsyncChatGenerate, openai
-
-    load_dotenv()
 
     agenerate = AsyncChatGenerate(model=getenv("OPENAI_CHAT_MODEL", "gpt-3.5-turbo"))
 

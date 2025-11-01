@@ -59,8 +59,6 @@ def get_sitemap():
 def linkify(text: str, from_whom: Person | None = None):
     related = [p for p in people if p != from_whom and p.name in text]
 
-    print(related)
-
     if not related:
         return text
 

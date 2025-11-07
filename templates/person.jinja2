@@ -15,10 +15,10 @@
     </div>
     <div id="footer">
         <footer>
-            <div id="sitemap">
+            <dl id="sitemap">
                 {% for university in universities %}
-                    <h3><a href="/{{ university }}" class="subtitle">{{ university.full_name }}</a></h3>
-                    <div class="university">
+                    <dt><a href="/{{ university }}" class="subtitle">{{ university.full_name }}</a></dt>
+                    <dd class="university">
                         {% for category in university.categories %}
                             <div class="category">
                                 <h4> {{ category }} </h4>
@@ -28,9 +28,9 @@
                                 {% endfor %}
                             </div>
                         {% endfor %}
-                    </div>
+                    </dd>
                 {% endfor %}
-            </div>
+            </dl>
         </footer>
         <div id="links">
             <a href="https://github.com/tiangolo/fastapi" title="we use FastAPI for web framework">

@@ -8,7 +8,7 @@
   "type": "module",
   "devDependencies": {
     "@iconify/json": "latest",
-    "@netlify/edge-functions": "~2.2",
+    "@netlify/edge-functions": "~3.0",
     "@unocss/cli": "~0.57",
     "@unocss/preset-icons": "~0.57",
     "@unocss/preset-uno": "~0.57"

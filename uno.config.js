@@ -1,4 +1,3 @@
-import presetIcons from "@unocss/preset-icons"
 import presetUno from "@unocss/preset-uno"
 
 export default {
@@ -8,5 +7,5 @@ export default {
             outFile: "./static/uno.css"
         }
     },
-    presets: [presetUno({ dark: "media" }), presetIcons()]
+    presets: [presetUno({ dark: "media" })]
 }
